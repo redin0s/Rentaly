@@ -1,8 +1,5 @@
 package com.folders.rentaly.persistence;
 
-import java.util.List;
-
-import com.folders.rentaly.model.User;
 import com.folders.rentaly.persistence.dao.jdbc.UserDAOJDBC;
 
 public class DBManager {
@@ -28,7 +25,12 @@ public class DBManager {
 		return dbmanager;
 	}
 	
+	private UserDAOJDBC userDAO = null;
+	
 	public UserDAOJDBC getUserDAOJDBC(){
-		return new UserDAOJDBC(dbsource);
+		if (userDAO == null)
+			userDAO = new UserDAOJDBC(dbsource);
+		
+		return userDAO;
 	}
 }

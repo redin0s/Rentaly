@@ -1,11 +1,13 @@
 package com.folders.rentaly.controller;
 
-import javax.servlet.http.HttpSession;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import com.folders.rentaly.Utilities;
+import com.folders.rentaly.persistence.DBManager;
+import com.folders.rentaly.persistence.dao.UserDAO;
 
 @Controller
 public class RegisterController {
@@ -25,17 +27,19 @@ public class RegisterController {
 		System.out.println(user);
 		System.out.println(pass);				
 		
-		if (plsRegister(user, pass)) {
-			return "login";
-		}else {
-			return "registerError";
+		UserDAO userDAO = DBManager.getInstance().getUserDAOJDBC();
+		
+		//TODO how to manage errors
+		
+		if (userDAO.findUser(user) != null) {
+			return "error-existinguser";
 		}
+		else if (userDAO.registerUser(user, Utilities.encrypt(pass))) {
+			return "registered";
+		}
+		
+		return "error";
+			
 	}
 
-	private boolean plsRegister(String username, String password) {
-		if (username.equals("admin") && password.equals("admin")) {
-			return true;
-		}
-		return false;
-	}
 }
