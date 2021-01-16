@@ -51,6 +51,12 @@
 		    <artifactId>jstl</artifactId>
 		    <version>1.2</version><!--$NO-MVN-MAN-VER$-->
 		</dependency>
+		<dependency>
+		<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.18.16</version><!--$NO-MVN-MAN-VER$-->
+			<scope>provided</scope>
+		</dependency>
 	</dependencies>
 
 	<build>

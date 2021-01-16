@@ -9,7 +9,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 
 @SuppressWarnings("unused")
-public class User {
-	private String username = "";
-	private String password = "";
+public class ServiceResponse<T> {
+	
+	private String status;
+	private T data;
+
 }

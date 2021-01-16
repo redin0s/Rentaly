@@ -40,7 +40,7 @@
                     <div class="col-12 col-lg-6 col-xl-5 offset-md-0 offset-xl-1"><input type="password" id="p" name="pass"><label for="p">Password</label></div>
                 </div>
                 <div class="row">
-                    <div class="col-12 col-lg-6 col-xl-5 offset-md-0 offset-xl-1"><input class="btn btn-primary" type="submit" value="Send">Accedi</input></div>
+                    <div class="col-12 col-lg-6 col-xl-5 offset-md-0 offset-xl-1"><input class="btn btn-primary" type="submit" value="Send" id="doLogin">Accedi</div>
                 </div>
                 </form>
                 <div class="row">

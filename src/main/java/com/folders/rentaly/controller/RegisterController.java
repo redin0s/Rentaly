@@ -21,25 +21,37 @@ public class RegisterController {
 	public String register() {
 		return "register";
 	}
+	/*
+	@GetMapping("/register")
+	public String registerWithError(@RequestParam String user, @RequestParam String error) {
+		//TODO set user textArea as RequestParam user 
+		
+		if (error.equals("existing")) {
+			//TODO existing user, maybe login?
+		}
+		else if (error.equals("generic")) {
+			//TODO pls try again
+		}
+		
+		return "register";
+	}
 
 	@PostMapping("doRegister")
-	public String register(@RequestParam String user, @RequestParam String pass) {
-		System.out.println(user);
-		System.out.println(pass);				
+	public String doRegister(@RequestParam String user, @RequestParam String pass) {			
 		
 		UserDAO userDAO = DBManager.getInstance().getUserDAOJDBC();
 		
 		//TODO how to manage errors
 		
 		if (userDAO.findUser(user) != null) {
-			return "error-existinguser";
+			return "register?error=existing";
 		}
 		else if (userDAO.registerUser(user, Utilities.encrypt(pass))) {
-			return "registered";
+			return "login?user=" + user + "&registered=true";
 		}
 		
-		return "error";
+		return "register?user=" + user + "&error=generic";
 			
 	}
-
+*/
 }

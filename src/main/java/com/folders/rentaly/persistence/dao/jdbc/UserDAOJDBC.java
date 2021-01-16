@@ -40,6 +40,11 @@ public class UserDAOJDBC implements UserDAO{
 	}
 	
 	@Override
+	public int getNumOfUsers() {
+		return numOfUsers;
+	}
+	
+	@Override
 	public List<User> findAll() {
 		Connection con;
 		List<User> users = new LinkedList<User>();
@@ -114,11 +119,6 @@ public class UserDAOJDBC implements UserDAO{
 		      }
 		}
 		return false;
-	}
-	
-	@Override
-	public int getNumOfUsers() {
-		return numOfUsers;
-	}
+	}	
 	
 }
