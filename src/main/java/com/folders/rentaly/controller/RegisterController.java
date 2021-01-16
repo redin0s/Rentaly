@@ -1,11 +1,16 @@
 package com.folders.rentaly.controller;
 
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.folders.rentaly.Utilities;
+import com.folders.rentaly.model.User;
 import com.folders.rentaly.persistence.DBManager;
 import com.folders.rentaly.persistence.dao.UserDAO;
 
@@ -21,37 +26,36 @@ public class RegisterController {
 	public String register() {
 		return "register";
 	}
-	/*
-	@GetMapping("/register")
-	public String registerWithError(@RequestParam String user, @RequestParam String error) {
-		//TODO set user textArea as RequestParam user 
-		
-		if (error.equals("existing")) {
-			//TODO existing user, maybe login?
+
+	@PostMapping("/doRegister")
+	@ResponseBody
+    public ResponseEntity<String> doRegister(@RequestBody User user) {	
+	//public ServiceResponse<?> doRegister(@RequestBody User user) {	
+        System.out.println("register " + user);
+
+        String response = null;
+		UserDAO userDAO = DBManager.getInstance().getUserDAOJDBC();
+
+        if(user.getUsername() == null || user.getUsername().equals("")) {
+            response = "missingusername";
+        }
+        else if(user.getPassword() == null || user.getPassword().equals("")) {
+            response = "missingpassword";
+        }
+        // else if (!Utilities.emailCheck(user.getUsername())) {
+        //     response = "invalidemail";
+        // }
+		else if (userDAO.findUser(user.getUsername()) != null) {
+			response = "existing";
 		}
-		else if (error.equals("generic")) {
-			//TODO pls try again
+		else if (userDAO.registerUser(user.getUsername(), Utilities.encrypt(user.getPassword()))) {
+			response = "success";
 		}
-		
-		return "register";
+		else {
+            response = "error";
+        }
+		//return new ServiceResponse<User>(response, user);	
+        return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
-	@PostMapping("doRegister")
-	public String doRegister(@RequestParam String user, @RequestParam String pass) {			
-		
-		UserDAO userDAO = DBManager.getInstance().getUserDAOJDBC();
-		
-		//TODO how to manage errors
-		
-		if (userDAO.findUser(user) != null) {
-			return "register?error=existing";
-		}
-		else if (userDAO.registerUser(user, Utilities.encrypt(pass))) {
-			return "login?user=" + user + "&registered=true";
-		}
-		
-		return "register?user=" + user + "&error=generic";
-			
-	}
-*/
 }

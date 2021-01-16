@@ -8,6 +8,8 @@ import java.sql.Statement;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.sql.DataSource;
+
 import com.folders.rentaly.model.User;
 import com.folders.rentaly.persistence.DBSource;
 import com.folders.rentaly.persistence.dao.UserDAO;
@@ -33,6 +35,7 @@ public class UserDAOJDBC implements UserDAO{
 			while(rs.next()) {
 				return rs.getInt("num");
 			}
+			con.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

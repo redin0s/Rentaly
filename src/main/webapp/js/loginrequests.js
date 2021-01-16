@@ -20,10 +20,30 @@ $(document).ready(
 				url : "doLogin",
 				data : JSON.stringify(userData),
 				dataType : 'json',
-				success : function (result) {
-					if (result.status == "success") {
-						
-					}
+				success : function (data, status, xhr) {
+					if (data == "success") {
+                        console.log("User " + userData.username + " successfully logged in.")
+                        window.location.href = "/account";
+                    }
+                    else {
+                        console.log("Login error " + data + ".");
+                        var msg;
+                        switch (data) {
+                            case "missingusername":
+                                msg = "Insert an email.";
+                                break;
+                            case "missingpassword":
+                                msg = "Insert a password.";
+                                break;
+                            case "notexisting":
+                                msg = "This account does not exist.";
+                                break;
+                            default:
+                                msg = "Server error. Please try again.";
+                                break;
+                        }
+                        $("#errorMessage").html(msg);
+                    }
 				}
 			});
         }

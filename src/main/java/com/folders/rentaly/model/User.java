@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 
-@SuppressWarnings("unused")
 public class User {
 	private String username = "";
 	private String password = "";

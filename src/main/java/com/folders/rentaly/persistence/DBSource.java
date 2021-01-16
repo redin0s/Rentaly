@@ -1,27 +1,31 @@
 package com.folders.rentaly.persistence;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
+
 public class DBSource {
-	private String uri;
-	private String username;
-	private String password;
-	private Connection connection;
-	
+	private static HikariConfig config;
+	private static HikariDataSource ds;
+
 	public DBSource(String uri, String username, String password) {
 		super();
-		this.uri = uri;
-		this.username = username;
-		this.password = password;
+		config = new HikariConfig();
+		config.setDriverClassName("org.postgresql.Driver");
+		config.setJdbcUrl(uri);
+		config.setUsername(username);
+		config.setPassword(password);
+		config.addDataSourceProperty("cachePrepStmts", "true");
+		config.addDataSourceProperty("prepStmtCacheSize", "250");
+		config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
+
+		ds = new HikariDataSource(config);
 	}
 	
 	public Connection getConnection() throws SQLException {
-		if(connection == null) {
-			connection = DriverManager.getConnection(uri, username, password);
-		}
-		return connection;
+		return ds.getConnection();
 	}
 	
 }

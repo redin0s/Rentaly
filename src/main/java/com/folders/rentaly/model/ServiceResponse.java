@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 
-@SuppressWarnings("unused")
 public class ServiceResponse<T> {
 	
 	private String status;
