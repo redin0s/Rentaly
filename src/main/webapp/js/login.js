@@ -22,7 +22,7 @@ $(document).ready(
 				dataType : 'json',
 				success : function (data, status, xhr) {
 					if (data == "success") {
-                        console.log("User " + userData.username + " successfully logged in.")
+                        console.log("User " + userData.username + " successfully logged in.");
                         window.location.href = "/account";
                     }
                     else {

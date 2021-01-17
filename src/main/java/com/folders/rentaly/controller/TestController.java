@@ -22,4 +22,9 @@ public class TestController {
 		//return model.getViewName();
 		return "prova";
 	}
+	
+	@GetMapping("/a") 
+	public String insertion() {
+		return "insertion";
+	}
 }

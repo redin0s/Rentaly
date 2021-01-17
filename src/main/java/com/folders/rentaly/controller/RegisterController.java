@@ -1,6 +1,8 @@
 package com.folders.rentaly.controller;
 
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -17,8 +19,14 @@ import com.folders.rentaly.persistence.dao.UserDAO;
 @Controller
 public class RegisterController {
 
+	
 	@GetMapping("/")
 	public String index() {
+		return "index";
+	}
+	
+	@GetMapping("/index")
+	public String explicitIndex() {
 		return "index";
 	}
 
@@ -29,7 +37,7 @@ public class RegisterController {
 
 	@PostMapping("/doRegister")
 	@ResponseBody
-    public ResponseEntity<String> doRegister(@RequestBody User user) {	
+    public ResponseEntity<String> doRegister(HttpSession session, @RequestBody User user) {	
 	//public ServiceResponse<?> doRegister(@RequestBody User user) {	
         System.out.println("register " + user);
 
@@ -50,6 +58,7 @@ public class RegisterController {
 		}
 		else if (userDAO.registerUser(user.getUsername(), Utilities.encrypt(user.getPassword()))) {
 			response = "success";
+            session.setAttribute("logged", user.getUsername());
 		}
 		else {
             response = "error";
