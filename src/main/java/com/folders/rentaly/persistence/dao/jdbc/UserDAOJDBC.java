@@ -11,31 +11,28 @@ import java.util.List;
 import javax.sql.DataSource;
 
 import com.folders.rentaly.model.User;
-import com.folders.rentaly.persistence.DBSource;
 import com.folders.rentaly.persistence.dao.UserDAO;
 
 public class UserDAOJDBC implements UserDAO{
 
-	private DBSource dbsource;
+	private DataSource dbsource;
 	private int numOfUsers;
 	
-	public UserDAOJDBC(DBSource dbsource) {
+	public UserDAOJDBC(DataSource dbsource) {
 		super();
 		this.dbsource = dbsource;
 		this.numOfUsers = getNOfUsers();
 	}
 
 	private int getNOfUsers() {
-		Connection con;
 		try {
-			con = dbsource.getConnection();
+			Connection con = dbsource.getConnection();
 			String query = "SELECT COUNT(*) as num FROM prova.user";
 			Statement st = con.createStatement();
 			ResultSet rs = st.executeQuery(query);
 			while(rs.next()) {
 				return rs.getInt("num");
 			}
-			con.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
