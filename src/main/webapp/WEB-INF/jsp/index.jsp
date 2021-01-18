@@ -3,14 +3,14 @@
 <html>
 
 <head>
-    <script src="../../js/import.js"></script>
+    <%@include file="includes/import.jsp" %>
     <title>Rentaly</title>
 </head>
 
 <body>
     <div>
         <div class="header-blue">
-            <script src="../../js/header.js"></script>
+            <%@include file="includes/header.jsp" %>
 
             <div class="container hero">
                 <div class="row">
