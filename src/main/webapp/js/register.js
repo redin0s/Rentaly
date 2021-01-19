@@ -9,8 +9,8 @@ $(document).ready(
 
         function ajaxLoginPost() {
 			var userData = {
-				username : $("#u").val(),
-				password : $("#p").val()
+				email : $("#email").val(),
+				password : $("#password").val()
 			}
 		
         	// DO POST
@@ -22,7 +22,7 @@ $(document).ready(
 				dataType : 'json',
 				success : function (data, status, xhr) {
 					if (data == "success") {
-                        console.log("User " + userData.username + " successfully registered.");
+                        console.log("User " + userData.email + " successfully registered.");
                         console.log("Logging in...");
                         window.location.href = "/account";
                     }
@@ -30,8 +30,8 @@ $(document).ready(
                         console.log("Login error " + data + ".");
                         var msg;
                         switch (data) {
-                            case "missingusername":
-                                msg = "Insert an email.";
+                            case "invalidemail":
+                                msg = "Insert a valid email.";
                                 break;
                             case "missingpassword":
                                 msg = "Insert a password.";

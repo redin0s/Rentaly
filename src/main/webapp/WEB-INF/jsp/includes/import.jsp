@@ -6,4 +6,3 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Bitter:400,700">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700">
 <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css">
-<link rel="stylesheet" href="../../css/Header-Blue.css">

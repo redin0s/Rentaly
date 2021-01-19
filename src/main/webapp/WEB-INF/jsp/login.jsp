@@ -1,37 +1,37 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
 
 <head>
-    <%@include file="includes/import.jsp" %>
-    <title>Accedi - Rentaly</title>
+	<%@include file="includes/import.jsp" %>
+	<title>Accedi - Rentaly</title>
+	<script src="../../js/login.js"></script>
+    <link rel="stylesheet" href="../../../css/Login-Register.css">
 </head>
 
 <body>
-    <div>
-        <div class="header-blue">
-            <%@include file="includes/header.jsp" %>
-            
-            <div class="container hero">
-                <form method="POST" action="doLogin">
-                <div class="row">
-                    <div class="col-12 col-lg-6 col-xl-5 offset-md-0 offset-xl-1"><input type="text" id="u" name="user" default="Username"></div>
-                </div>
-                <div class="row">
-                    <div class="col-12 col-lg-6 col-xl-5 offset-md-0 offset-xl-1"><input type="password" id="p" name="pass"></div>
-                </div>
-                <div class="row">
-                    <div class="col-12 col-lg-6 col-xl-5 offset-md-0 offset-xl-1"><input class="btn btn-primary" type="submit" value="Accedi" id="doLogin"></div>
-                </div>
-                </form>
-                <div class="row">
-                    <div class="col">
-                        <p>Non hai ancora un account? <a href="register">Registrati</a></p>
-                    </div>
-                </div>
+	<%@include file="includes/header.jsp" %>
+    
+    <div class="login-register">
+        <form method="post" action="doLogin">
+            <h2 class="sr-only">Accedi</h2>
+
+            <div class="form-group">
+                <input class="form-control" type="email" name="email" id="#email" placeholder="Email">
             </div>
-        </div>
-    </div>
+
+            <div class="form-group">
+                <input class="form-control" type="password" name="password" id="#password" placeholder="Password">
+            </div>
+
+            <div class="form-group">
+                <button class="btn btn-primary btn-block" type="submit">Accedi</button>
+            </div>
+            
+            <p class="forgot">Non hai ancora un account? <a href="register">Registrati</a></p>
+        </form>
+    </div> 
+
 </body>
 
 </html>

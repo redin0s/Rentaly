@@ -9,8 +9,8 @@ $(document).ready(
 
         function ajaxLoginPost() {
 			var userData = {
-				username : $("#u").val(),
-				password : $("#p").val()
+				email : $("#email").val(),
+				password : $("#password").val()
 			}
 		
         	// DO POST
@@ -22,14 +22,14 @@ $(document).ready(
 				dataType : 'json',
 				success : function (data, status, xhr) {
 					if (data == "success") {
-                        console.log("User " + userData.username + " successfully logged in.");
+                        console.log("User " + userData.email + " successfully logged in.");
                         window.location.href = "/account";
                     }
                     else {
                         console.log("Login error " + data + ".");
                         var msg;
                         switch (data) {
-                            case "missingusername":
+                            case "missingemail":
                                 msg = "Insert an email.";
                                 break;
                             case "missingpassword":

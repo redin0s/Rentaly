@@ -31,10 +31,10 @@ public class LoginController {
 		
 		String response = null;
 		UserDAO userDAO = DBManager.getInstance().getUserDAOJDBC();
-		User foundUser = userDAO.findUser(user.getUsername());
+		User foundUser = userDAO.findUser(user.getEmail());
 
-		if(user.getUsername() == null || user.getUsername().equals("")) {
-            response = "missingusername";
+		if(user.getEmail() == null || user.getEmail().equals("")) {
+            response = "missingemail";
         }
         else if(user.getPassword() == null || user.getPassword().equals("")) {
             response = "missingpassword";
@@ -44,7 +44,7 @@ public class LoginController {
 		}
 		else if (foundUser.getPassword().equals(Utilities.encrypt(user.getPassword()))) {
 			response = "success";
-            session.setAttribute("logged", user.getUsername());
+            session.setAttribute("logged", user.getEmail());
 		}
 		else {
 			response = "error";

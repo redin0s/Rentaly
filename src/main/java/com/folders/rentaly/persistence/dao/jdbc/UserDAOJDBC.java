@@ -56,7 +56,7 @@ public class UserDAOJDBC implements UserDAO{
 			User user;
 			while(rs.next()) {
 				user = new User();
-				user.setUsername(rs.getString("username"));
+				user.setEmail(rs.getString("email"));
 				user.setPassword(rs.getString("password"));
 				users.add(user);
 				
@@ -81,7 +81,7 @@ public class UserDAOJDBC implements UserDAO{
 			User user;
 			while(rs.next()) {
 				user = new User();
-				user.setUsername(rs.getString("username"));
+				user.setEmail(rs.getString("email"));
 				user.setPassword(rs.getString("password"));
 				return user;
 			}

@@ -13,4 +13,6 @@ public class Realty {
 	private User owner = null;
 	private String location = "";
 	private String type = "";
+	private int square_meters;
+	private int max_holders;
 }

@@ -44,21 +44,21 @@ public class RegisterController {
         String response = null;
 		UserDAO userDAO = DBManager.getInstance().getUserDAOJDBC();
 
-        if(user.getUsername() == null || user.getUsername().equals("")) {
-            response = "missingusername";
+        if(user.getEmail() == null || user.getEmail().equals("")) {
+            response = "invalidemail";
         }
         else if(user.getPassword() == null || user.getPassword().equals("")) {
             response = "missingpassword";
         }
-        // else if (!Utilities.emailCheck(user.getUsername())) {
-        //     response = "invalidemail";
-        // }
-		else if (userDAO.findUser(user.getUsername()) != null) {
+        else if (!Utilities.emailCheck(user.getEmail())) {
+            response = "invalidemail";
+        }
+		else if (userDAO.findUser(user.getEmail()) != null) {
 			response = "existing";
 		}
-		else if (userDAO.registerUser(user.getUsername(), Utilities.encrypt(user.getPassword()))) {
+		else if (userDAO.registerUser(user.getEmail(), Utilities.encrypt(user.getPassword()))) {
 			response = "success";
-            session.setAttribute("logged", user.getUsername());
+            session.setAttribute("logged", user.getEmail());
 		}
 		else {
             response = "error";
