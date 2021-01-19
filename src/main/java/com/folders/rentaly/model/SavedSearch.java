@@ -1,7 +1,5 @@
 package com.folders.rentaly.model;
 
-import java.time.LocalDate;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,21 +19,21 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 
 @Entity
-@Table(name = "check", schema = "prova")
-public class Check {
+@Table(name = "saved_search", schema = "prova")
+public class SavedSearch {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
-    @Column(columnDefinition = "character varying(255)")
-    private String check_type;
+    private String location;
 
     @Column(columnDefinition = "numeric(10,2)")
-    private Float cost;
+    private Float min_price;
 
-    private LocalDate expire;
+    @Column(columnDefinition = "numeric(10,2)")
+    private Float max_price;
 
-    @JoinColumn(name = "rent_id")
+    @JoinColumn(name = "holder_id")
     @ManyToOne
-	private Rent rent;
+    private User holder;
 }

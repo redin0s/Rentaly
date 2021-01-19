@@ -10,26 +10,22 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import com.folders.rentaly.Utilities;
 import com.folders.rentaly.model.User;
-import com.folders.rentaly.persistence.DBManager;
-import com.folders.rentaly.persistence.dao.UserDAO;
+import com.folders.rentaly.persistence.UserRepository;
 
 @Controller
 public class RegisterController {
-
 	
-	@GetMapping("/")
+	@Autowired
+	private UserRepository userRepository;
+	
+	@GetMapping({"/" , "/index"})
 	public String index() {
 		return "index";
 	}
 	
-	@GetMapping("/index")
-	public String explicitIndex() {
-		return "index";
-	}
-
 	@GetMapping("/register")
 	public String register() {
 		return "register";
@@ -42,7 +38,6 @@ public class RegisterController {
         System.out.println("register " + user);
 
         String response = null;
-		UserDAO userDAO = DBManager.getInstance().getUserDAOJDBC();
 
         if(user.getEmail() == null || user.getEmail().equals("")) {
             response = "invalidemail";
@@ -53,16 +48,20 @@ public class RegisterController {
         else if (!Utilities.emailCheck(user.getEmail())) {
             response = "invalidemail";
         }
-		else if (userDAO.findUser(user.getEmail()) != null) {
+		else if (userRepository.findByEmail(user.getEmail()) != null) {
 			response = "existing";
 		}
-		else if (userDAO.registerUser(user.getEmail(), Utilities.encrypt(user.getPassword()))) {
-			response = "success";
-            session.setAttribute("logged", user.getEmail());
-		}
 		else {
-            response = "error";
-        }
+			try {
+				user.setPassword(Utilities.encrypt(user.getPassword()));
+				userRepository.save(user);
+				response = "success";
+				session.setAttribute("logged", user.getEmail());
+			}
+			catch (Exception e) {
+				response = "error";
+			}
+		}
 		//return new ServiceResponse<User>(response, user);	
         return new ResponseEntity<>(response, HttpStatus.OK);
 	}
