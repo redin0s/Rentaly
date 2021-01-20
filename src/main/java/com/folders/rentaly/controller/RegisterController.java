@@ -31,10 +31,9 @@ public class RegisterController {
 		return "register";
 	}
 
-	@PostMapping("/doRegister")
+	@PostMapping(value = "/doRegister", consumes={"application/json"})
 	@ResponseBody
     public ResponseEntity<String> doRegister(HttpSession session, @RequestBody User user) {	
-	//public ServiceResponse<?> doRegister(@RequestBody User user) {	
         System.out.println("register " + user);
 
         String response = null;
@@ -53,7 +52,7 @@ public class RegisterController {
 		}
 		else {
 			try {
-				user.setPassword(Utilities.encrypt(user.getPassword()));
+				user.setPassword(Utilities.encrypt(user.getPassword(), user.getEmail()));
 				userRepository.save(user);
 				response = "success";
 				session.setAttribute("logged", user.getEmail());
@@ -62,7 +61,6 @@ public class RegisterController {
 				response = "error";
 			}
 		}
-		//return new ServiceResponse<User>(response, user);	
         return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 

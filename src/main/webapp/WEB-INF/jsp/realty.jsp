@@ -9,12 +9,11 @@
 
 <body>
     <%@include file="includes/header.jsp" %>
-    
+    <br>
     <div class="container">
         <form method="post" action="updateRealty">
             <div class="row">
                 <div class="col-md-6">
-                    <label for="type">Select list:</label>
                     <select class="form-control" id="type">
                         <option>Appartamento</option>
                         <option>Monolocale</option>
@@ -26,8 +25,7 @@
                     </select>
                 </div>
                 <div class="col-md-6">
-                    <p>a</p>
-                    <p id="town"> Roma</p>
+                    <p>a <p id="town">Roma</p></p> 
                 </div>
             </div>
             <div class="row">

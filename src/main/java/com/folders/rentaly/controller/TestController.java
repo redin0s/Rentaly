@@ -8,7 +8,9 @@ import com.folders.rentaly.persistence.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.SpringApplication;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -33,13 +35,32 @@ public class TestController {
 		return us;
 	}
 	
-	@GetMapping("/a") 
+	@GetMapping("/insertion") 
 	public String insertion() {
 		return "insertion";
+	}
+
+	@GetMapping("/realtyInsertion") 
+	public String realty() {
+		return "realty";
 	}
 
 	@GetMapping("/realty")
 	public @ResponseBody Iterable<Realty> realties() {
 		return realtyRepository.findAll();
 	}
+
+	@GetMapping("/model")
+	public String provamod(Model model) {
+		model.addAttribute("listUsers", userRepository.findAll());
+
+		return "prova";
+	}
+
+	@GetMapping("/exit")
+	public void exitfun() {
+		System.out.println("mi ndi vaju alla casa");
+		System.exit(10);
+	}
+	
 }

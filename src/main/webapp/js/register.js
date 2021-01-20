@@ -2,8 +2,9 @@ $(document).ready(
     function() {
 
         // POST REQUEST
-        $("#doRegister").click(function(event) {
+        $("#register").on("submit", function(event) {
             event.preventDefault();
+            console.log("registering");
             ajaxLoginPost();
         });
 
@@ -12,7 +13,7 @@ $(document).ready(
 				email : $("#email").val(),
 				password : $("#password").val()
 			}
-		
+        
         	// DO POST
 			$.ajax({
 				type : "POST",

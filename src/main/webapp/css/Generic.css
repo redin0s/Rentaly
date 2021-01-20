@@ -1,0 +1,35 @@
+.generic .hero {
+    margin-top: 20px;
+    text-align: center;
+  }
+  
+  @media (min-width:768px) {
+    .generic .hero {
+      margin-top: 60px;
+      text-align: left;
+    }
+  }
+  
+  .generic .hero h1 {
+    color: #fff;
+    font-size: 40px;
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-weight: 300;
+    line-height: 1.4;
+  }
+  
+  @media (min-width:992px) {
+    .generic .hero h1 {
+      margin-top: 190px;
+      margin-bottom: 24px;
+      line-height: 1.2;
+    }
+  }
+  
+  .generic .hero p {
+    color: rgba(255,255,255,0.8);
+    font-size: 20px;
+    margin-bottom: 30px;
+    font-weight: 300;
+  }

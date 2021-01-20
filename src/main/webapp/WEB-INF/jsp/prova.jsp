@@ -11,7 +11,7 @@
 	<p>provprov</p>
 	<ul>
 	<c:forEach items="${listUsers}" var="user">
-		<li>Utente: <c:out value="${user.username}"/></li>
+		<li>Utente: <c:out value="${user.email}"/></li>
 	</c:forEach>
 	</ul>
 <%-- 	</c:if> --%>

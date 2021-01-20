@@ -1,42 +1,24 @@
 package com.folders.rentaly;
 
-import java.security.MessageDigest;
+import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+
 public class Utilities {
 	
-	final protected static char[] hexArray = "0123456789ABCDEF".toCharArray();
-	
-	public static String bytesToHex(byte[] bytes) {
-		char[] hexChars = new char[bytes.length * 2];
-		int v;
-		
-		for (int j = 0; j < bytes.length; j++) {
-			v = bytes[j] & 0xFF;
-			hexChars[j * 2] = hexArray[v >>> 4];
-			hexChars[j * 2 + 1] = hexArray[v & 0x0F];
-		}
-		
-		return new String(hexChars);
-	}
-
-	// TODO Change this to something else, maybe stored in the database
-	private static String SALT = "123456";
-	
-	
-	public static String encrypt(String password) {
+	public static String encrypt(String password, String salt) {
 		try {
-			MessageDigest md = MessageDigest.getInstance("SHA-256");
-			md.update(SALT.getBytes());        // <-- Prepend SALT.
-			md.update(password.getBytes());
-			// md.update(SALT.getBytes());     // <-- Or, append SALT.
-
-			byte[] out = md.digest();
-			return bytesToHex(out);            // <-- Return the Hex Hash.
+			Mac mac = Mac.getInstance("HmacSHA256");
+			SecretKeySpec spec = new SecretKeySpec(salt.getBytes(), "HmacSHA256");
+			mac.init(spec);
+			return Base64.getEncoder().encodeToString(mac.doFinal());
 		}
-		catch (NoSuchAlgorithmException e) {
+		catch (InvalidKeyException | NoSuchAlgorithmException e) {
 			e.printStackTrace();
 		}
 		

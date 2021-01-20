@@ -26,33 +26,28 @@ public class LoginController {
 		return "login";
 	}
 	
-	@PostMapping("/doLogin")
+	@PostMapping(value = "/doLogin", consumes={"application/json"})
 	@ResponseBody
     public ResponseEntity<String> doLogin(HttpSession session, @RequestBody User user) {
-	//public ServiceResponse<?> doLogin(@RequestBody User user) {
 		System.out.println("login " + user);			
 		
-		String response = null;
 		User foundUser = userRepository.findByEmail(user.getEmail());
 
 		if(user.getEmail() == null || user.getEmail().equals("")) {
-            response = "missingemail";
+            return ResponseEntity.badRequest().body("missingemail");
         }
         else if(user.getPassword() == null || user.getPassword().equals("")) {
-            response = "missingpassword";
+            return ResponseEntity.badRequest().body("missingpassword");
         }
         else if (foundUser == null) {
-			response = "notexisting";
+            return ResponseEntity.badRequest().body("notexisting");
 		}
-		else if (foundUser.getPassword().equals(Utilities.encrypt(user.getPassword()))) {
-			response = "success";
+		else if (foundUser.getPassword().equals(Utilities.encrypt(user.getPassword(), user.getEmail()))) {
             session.setAttribute("logged", user.getEmail());
+			return new ResponseEntity<>("succes", HttpStatus.OK);
 		}
-		else {
-			response = "error";
-		}
-		//return new ServiceResponse<User>(response, foundUser);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+
+        return ResponseEntity.badRequest().body("error");
 	}
 	
 	@GetMapping("/logout")

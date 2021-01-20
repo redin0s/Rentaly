@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "user", schema = "prova")
 public class User {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	private String email;
 	private String password;

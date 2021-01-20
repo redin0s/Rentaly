@@ -2,45 +2,84 @@ package com.folders.rentaly.controller;
 
 import javax.servlet.http.HttpSession;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.folders.rentaly.model.Insertion;
 import com.folders.rentaly.model.Realty;
+import com.folders.rentaly.persistence.InsertionRepository;
+import com.folders.rentaly.persistence.RealtyRepository;
 
 @Controller
 public class RealtyController {
+	private static final Logger log = LoggerFactory.getLogger(RealtyController.class);
 
-	@GetMapping("/realty") 
-	public String realty(HttpSession session, @RequestBody Realty realty) {
+	@Autowired
+	private RealtyRepository realtyRepository;
+
+	@Autowired
+	private InsertionRepository insertionRepository;
+
+	/*
+	@RequestMapping(value = "/album", method = RequestMethod.GET)
+    public String showAlbums(@Valid @ModelAttribute("album") Album album, Model model) {
+		model.addAttribute("albums", this.albumService.tuttiAlbum());
+		return "/albumList";
+		Model
+	}
+	*/
+
+	@RequestMapping("/newRealty")
+	public String newRealty(HttpSession session) {
+		return realty(session, 0);
+	}
+
+	@RequestMapping("/realty/{realtyID}") 
+	public String realty(HttpSession session, @PathVariable("realtyID") Integer realtyID) {
 		try {
-			// String email = session.getAttribute("logged");
-			//if realtyID == newRealty
-			//create new Realty for user
-			//if exists realtyID in user-realties
+			String email = session.getAttribute("logged").toString();
+			if (realtyID == 0) {
+				Realty r = new Realty();
+				Insertion i = new Insertion();
+				// session.addParameter("realty", r);
+				// session.addParameter("insertion", i);
+			}
+			else {
+				// Realty r = realtyRepository.findById(realtyID);
+				// if (r.getOwner().getEmail() == email) {
+				// 	Insertion i = insertionRepository.findById(realtyID);
+				// 	session.addParameter("realty", r);
+				// 	session.addParameter("insertion", i);
+				// }
+				// else {
+				// 	log.info("requested realty " + realtyID.toString() + " mismatches owner");
+				// 	return "error";
+				// }
+			}
 			return "realty";
-			//else
-			// 		System.out.println("requested realty mismatches owner");
-			// return "error";
 		}
 		catch (IllegalStateException e) {
-			// if (DEBUG)
-			// 		System.out.println("realty request for user not logged");
+			log.info("realty request for user not logged");
 		}
 		return "index";
 	}
 
-	@PostMapping("/createRealty")
+	@PostMapping("/updateRealty")
 	@ResponseBody
 	public ResponseEntity<String> doRegister(HttpSession session, @RequestBody Realty realty) {
-		// public ServiceResponse<?> doRegister(@RequestBody User user) {
 		System.out.println("create realty " + realty);
 
 		String response = null;
-		// UserDAO userDAO = DBManager.getInstance().getUserDAOJDBC();
 
 		if (realty.getLocation() == null || realty.getLocation().equals("")) {
 			response = "invalidlocation";
@@ -57,7 +96,6 @@ public class RealtyController {
 		else {
 			response = "error";
 		}
-		// return new ServiceResponse<User>(response, user);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
