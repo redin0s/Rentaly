@@ -22,6 +22,7 @@ public class LoginController {
 	private UserRepository userRepository;
 	
 	@GetMapping("/login")
+                    
 	public String cleanLogin() {
 		return "login";
 	}

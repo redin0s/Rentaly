@@ -20,8 +20,10 @@ $(document).ready(
 				contentType : "application/json",
 				url : "doLogin",
 				data : JSON.stringify(userData),
-				dataType : 'json',
+                dataType : 'json',
+                crossDomain: true,
 				success : function (data, status, xhr) {
+                    console.log(data);
 					if (data == "success") {
                         console.log("User " + userData.email + " successfully logged in.");
                         window.location.href = "/account";
