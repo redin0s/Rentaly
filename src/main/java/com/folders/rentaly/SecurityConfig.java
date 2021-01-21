@@ -22,6 +22,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .anyRequest()
             .permitAll();
 
-        http.portMapper().http(8080).mapsTo(8443);
+        // http.portMapper().http(8080).mapsTo(8443);
     }
 }

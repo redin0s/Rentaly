@@ -5,6 +5,9 @@ target/
 !**/src/test/**/target/
 docker/db-data
 
+### IGNORE cert for https ###
+rentaly.p12
+
 ### STS ###
 .apt_generated
 .classpath

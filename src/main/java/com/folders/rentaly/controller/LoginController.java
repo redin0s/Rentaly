@@ -44,7 +44,7 @@ public class LoginController {
             return ResponseEntity.badRequest().body("notexisting");
 		}
 		else if (foundUser.getPassword().equals(Utilities.encrypt(user.getPassword(), user.getEmail()))) {
-            session.setAttribute("logged", user.getEmail());
+            session.setAttribute("logged", user.getId());
 			return new ResponseEntity<>("succes", HttpStatus.OK);
 		}
 

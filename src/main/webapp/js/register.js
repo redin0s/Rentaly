@@ -5,10 +5,10 @@ $(document).ready(
         $("#register").on("submit", function(event) {
             event.preventDefault();
             console.log("registering");
-            ajaxLoginPost();
+            ajaxRegisterPost();
         });
 
-        function ajaxLoginPost() {
+        function ajaxRegisterPost() {
 			var userData = {
 				email : $("#email").val(),
 				password : $("#password").val()

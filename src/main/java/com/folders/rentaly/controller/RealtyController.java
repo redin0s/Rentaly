@@ -1,6 +1,9 @@
 package com.folders.rentaly.controller;
 
+import java.util.List;
+
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,11 +17,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
-import com.folders.rentaly.model.Insertion;
 import com.folders.rentaly.model.Realty;
-import com.folders.rentaly.persistence.InsertionRepository;
+import com.folders.rentaly.model.User;
 import com.folders.rentaly.persistence.RealtyRepository;
+import com.folders.rentaly.persistence.UserRepository;
 
 @Controller
 public class RealtyController {
@@ -28,75 +32,79 @@ public class RealtyController {
 	private RealtyRepository realtyRepository;
 
 	@Autowired
-	private InsertionRepository insertionRepository;
+	private UserRepository userRepository;
 
-	/*
-	@RequestMapping(value = "/album", method = RequestMethod.GET)
-    public String showAlbums(@Valid @ModelAttribute("album") Album album, Model model) {
-		model.addAttribute("albums", this.albumService.tuttiAlbum());
-		return "/albumList";
-		Model
-	}
-	*/
-
-	@RequestMapping("/newRealty")
-	public String newRealty(HttpSession session) {
-		return realty(session, 0);
+	@RequestMapping({"/realty", "/realty/new"})
+	public String newRealty(HttpSession session, ModelAndView model) {
+		Realty r = new Realty();
+		r.setOwner(userRepository.findById(Integer.parseInt(session.getAttribute("logged").toString())).get());
+		model.setViewName("realty");
+		model.addObject("realty", r);
+		return model.getViewName();
 	}
 
-	@RequestMapping("/realty/{realtyID}") 
-	public String realty(HttpSession session, @PathVariable("realtyID") Integer realtyID) {
-		try {
-			String email = session.getAttribute("logged").toString();
-			if (realtyID == 0) {
-				Realty r = new Realty();
-				Insertion i = new Insertion();
-				// session.addParameter("realty", r);
-				// session.addParameter("insertion", i);
-			}
-			else {
-				// Realty r = realtyRepository.findById(realtyID);
-				// if (r.getOwner().getEmail() == email) {
-				// 	Insertion i = insertionRepository.findById(realtyID);
-				// 	session.addParameter("realty", r);
-				// 	session.addParameter("insertion", i);
-				// }
-				// else {
-				// 	log.info("requested realty " + realtyID.toString() + " mismatches owner");
-				// 	return "error";
-				// }
-			}
-			return "realty";
-		}
-		catch (IllegalStateException e) {
-			log.info("realty request for user not logged");
-		}
-		return "index";
+	@GetMapping(value = "/realty/{realtyID}")
+	public ModelAndView realty(HttpSession session, @PathVariable("realtyID") String realtyID, ModelAndView model) {
+		Realty c = new Realty();
+		c.setDisplay_name("test diplay " + realtyID);
+		model.setViewName("realty");
+		model.addObject("realty", c);
+		return model;
+
+
+		// try {
+		// 	Integer id = Integer.parseInt(session.getAttribute("logged").toString());
+		// 	List<Realty> realties = realtyRepository.findByOwnerId(id);
+		// 	model.setViewName("realty");
+		// 	for (Realty r: realties) {
+		// 		if (r.getId().toString().equals(realtyID)) { //bad xD
+		// 			model.addObject("realty", r);
+		// 			// model.addObject("id", r.getId());
+		// 			// model.addObject("display_name", r.getOwner());
+		// 			// model.addObject("latitude", r.la)
+		// 			return model.getViewName();
+		// 		}
+		// 	}
+			
+		// 	log.info("requested realty " + realtyID + " not present for owner " + id.toString());
+		// 	return "error";
+			
+		// }
+		// catch (IllegalStateException e) {
+		// 	log.info("realty request for user not logged");
+		// }
+		// return "index";
 	}
 
-	@PostMapping("/updateRealty")
+	@PostMapping(value = "/doSaveDraft", consumes={"application/json"})
 	@ResponseBody
-	public ResponseEntity<String> doRegister(HttpSession session, @RequestBody Realty realty) {
-		System.out.println("create realty " + realty);
+	public ResponseEntity<String> doSaveDraft(HttpSession session, @RequestBody Realty realty) {
+		log.info("save draft " + realty.getId());			
+		try {
+			realty.setOwner(userRepository.findById(Integer.parseInt(session.getAttribute("logged").toString())).get());
+			// realty.setIs_draft(true);
+			realtyRepository.save(realty);
+			return new ResponseEntity<>("succes", HttpStatus.OK);
+		} catch (Exception e) {
+			log.info(e.getStackTrace().toString());
+		}
 
-		String response = null;
-
-		if (realty.getLocation() == null || realty.getLocation().equals("")) {
-			response = "invalidlocation";
-		}
-		else if (realty.getMax_holders() <= 0) {
-			response = "invalidHolders";
-		}
-		else if (realty.getType() == null || realty.getType().equals("")) {
-			response = "invalidType";
-		}
-		else if (realty.getSquare_meters() <= 0) {
-			response = "invalidsquare_meters";
-		}
-		else {
-			response = "error";
-		}
-		return new ResponseEntity<>(response, HttpStatus.OK);
+        return ResponseEntity.badRequest().body("error");
 	}
 
+	@PostMapping(value = "/doSaveRealty", consumes={"application/json"})
+	@ResponseBody
+	public ResponseEntity<String> doSaveRealty(HttpSession session, @Valid @RequestBody Realty realty) {
+		log.info("save realty " + realty.getId());			
+		try {
+			realty.setOwner(userRepository.findById(Integer.parseInt(session.getAttribute("logged").toString())).get());
+			//realty.setIs_draft(false);
+			realtyRepository.save(realty);
+			return new ResponseEntity<>("succes", HttpStatus.OK);
+		} catch (Exception e) {
+			log.info(e.getStackTrace().toString());
+		}
+
+        return ResponseEntity.badRequest().body("error");
+	}
 }
