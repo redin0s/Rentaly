@@ -1,75 +1,68 @@
-var iconFeature = new ol.Feature({
-  geometry: new ol.geom.Point(ol.proj.fromLonLat([12.4917, 41.8887]))
-});
+var map, searchManager;
 
-var vectorLayer = new ol.layer.Vector({
-        source: new ol.source.Vector({
-          features: [iconFeature]
-        }),
-        style: new ol.style.Style({
-          image: new ol.style.Icon({
-            anchor: [0.5, 46],
-            anchorXUnits: 'fraction',
-            anchorYUnits: 'pixels',
-            src: 'https://openlayers.org/en/latest/examples/data/icon.png'
-          })
-        })
-      });
-var map = new ol.Map({
-    target: 'map',
-    layers: [
-      new ol.layer.Tile({
-        source: new ol.source.OSM(),
-      }),
-      vectorLayer
-    ],
-    view: new ol.View({
-      center: ol.proj.fromLonLat([12.4917, 41.8887]),
-      zoom: 6
-    })
-  });
+function GetMap() {
+    map = new Microsoft.Maps.Map('#map', {});
 
-map.on('click', function(event) {
-    let pos = addMarker(event.coordinates);
-    reverseGeocode(pos);
-});
-
-function addMarker(coordinates) {
-  let pos = ol.proj.transform(coordinates, 'EPSG:3857', 'EPSG:4326');
-  vectorLayer.getSource().clear();
-  vectorLayer.getSource().addFeature(new ol.Feature ({
-    geometry: new ol.geom.Point(ol.proj.fromLonLat(pos))
-  }));
-  return pos;
+    //Make a request to geocode New York, NY.
+    geocodeQuery("New York, NY");
 }
 
-function reverseGeocode(coords) {
-  $.ajax({
-      type : "GET",
-      contentType : "application/json",
-      url : 'https://nominatim.openstreetmap.org/reverse?format=json&lon=' + coords[0] + '&lat=' + coords[1],
-      success : function (data, status, xhr) {
-          console.log(data);
-          $("#address").html(data.display_name);
-      },
-      error : function () {
-          console.log("error");
-      }
-  });
+function geocodeQuery(query) {
+    //If search manager is not defined, load the search module.
+    if (!searchManager) {
+        //Create an instance of the search manager and call the geocodeQuery function again.
+        Microsoft.Maps.loadModule('Microsoft.Maps.Search', function () {
+            searchManager = new Microsoft.Maps.Search.SearchManager(map);
+            geocodeQuery(query);
+        });
+    } else {
+        var searchRequest = {
+            where: query,
+            callback: function (r) {
+                //Add the first result to the map and zoom into it.
+                if (r && r.results && r.results.length > 0) {
+                    var pin = new Microsoft.Maps.Pushpin(r.results[0].location);
+                    map.entities.push(pin);
+
+                    map.setView({ bounds: r.results[0].bestView });
+                }
+            },
+            errorCallback: function (e) {
+                //If there is an error, alert the user about it.
+                alert("No results found.");
+            }
+        };
+
+        //Make the geocode request.
+        searchManager.geocode(searchRequest);
+    }
 }
 
-function reverseAddress(fulladdress) {
-  $.ajax({
-      type : "GET",
-      contentType : "application/json",
-      url : 'https://nominatim.openstreetmap.org/ui/search.html?q=' + fulladdress,
-      success : function (data, status, xhr) {
-          console.log(data);
-          // $("#address").html(data.display_name);
+function reverseGeocode() {
+    //If search manager is not defined, load the search module.
+    if (!searchManager) {
+        //Create an instance of the search manager and call the reverseGeocode function again.
+        Microsoft.Maps.loadModule('Microsoft.Maps.Search', function () {
+            searchManager = new Microsoft.Maps.Search.SearchManager(map);
+            reverseGeocode();
+        });
+    } else {
+        var searchRequest = {
+            location: map.getCenter(),
+            callback: function (r) {
+                //Tell the user the name of the result.
+                alert(r.name);
+            },
+            errorCallback: function (e) {
+                //If there is an error, alert the user about it.
+                alert("Unable to reverse geocode location.");
+            }
+        };
 
-      },
-      error : function () {
-          console.log("error");
-      }
-  });
-}
+        //Make the reverse geocode request.
+        searchManager.reverseGeocode(searchRequest);
+    }
+  }
+    
+    
+  window.onload = GetMap();

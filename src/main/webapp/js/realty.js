@@ -1,26 +1,29 @@
-window.onload(function() {
-    // let realty = ${realty};
-    // $("#id").html(realty.id);
-    // $("#owner").html(realty.owner);
-    // $("#display_name").html(realty.display_name);
-    // $("#latitude").html(realty.latitude;
-    // $("#longitude").html(realty.longitude);
-    // $("#type").html(realty.type);
-    // $("#sqm").html(realty.square_meters);
-    // $("#inq").html(realty.max_holders);
-});
+window.onload = function() {
+    //prendi lat e lon
+
+    // quando modifichi una realty esistente
+    let pos = [
+        document.getElementById("latitude").value,
+        document.getElementById("longitude").value
+    ];
+    //inserisci marker, quindi fai la ricerca e prenditi il result
+    // addMarker(pos);
+    // let realty = reverseGeocode(pos);
+    //inserisci le cose mancanti nel form
+    // loadRealty(realty);
+};
 
 
 $(document).ready(
     function() {
 
         // POST REQUESTS
-        $("#undo").on("submit", function(event) {
+        /*$("#undo").on("submit", function(event) {
             event.preventDefault();
             if(confirm("E se poi te ne penti?")) {
                 console.log("undone changes");
             } 
-        });
+        });*/
 
         $("#draft").on("submit", function(event) {
             event.preventDefault();
@@ -54,8 +57,6 @@ $(document).ready(
 				contentType : "application/json",
 				url : "doSaveDraft",
 				data : JSON.stringify(getFormData()),
-                dataType : 'json',
-                crossDomain: true,
 				success : function (data, status, xhr) {
                     console.log(data);
 					if (data == "success") {
@@ -77,8 +78,6 @@ $(document).ready(
 				contentType : "application/json",
 				url : "doSaveRealty",
 				data : JSON.stringify(getFormData()),
-                dataType : 'json',
-                crossDomain: true,
 				success : function (data, status, xhr) {
                     console.log(data);
 					if (data == "success") {

@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -32,8 +33,26 @@ public class Insertion {
     private Float cost;
 
     private LocalDate publish_date;
+    @Transient // Usare transient per non modificare il db pls
+	private String picture_1;
+    @Transient
+	private String picture_2;
+    @Transient
+    private String picture_3;
+
+    private String road;
+
+    private String city;
+
+    private String province;
+
+
+
+    private byte[][] images;
+    
 
     @JoinColumn(name = "realty_id")
+
     @OneToOne
-	private Realty realty;
+    private Realty realty;
 }

@@ -8,9 +8,25 @@ import java.util.regex.Pattern;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import javax.servlet.http.HttpSession;
+
+import com.folders.rentaly.model.User;
+import com.folders.rentaly.persistence.UserRepository;
+
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.userdetails.UserDetails;
 
 public class Utilities {
-	
+
+	//TODO NOT TO DO THIS
+	public static User getUser(HttpSession session, UserRepository userRepository) {
+		SecurityContext s = (SecurityContext) session.getAttribute("SPRING_SECURITY_CONTEXT");
+		UserDetails ud = (UserDetails) s.getAuthentication().getPrincipal();
+		User user = userRepository.findByEmail(ud.getUsername());
+		return user;
+	}
+
+
 	public static String encrypt(String password, String salt) {
 		try {
 			Mac mac = Mac.getInstance("HmacSHA256");

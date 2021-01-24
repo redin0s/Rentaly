@@ -1,6 +1,6 @@
 package com.folders.rentaly.controller;
 
-import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -19,8 +19,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.folders.rentaly.Utilities;
 import com.folders.rentaly.model.Realty;
-import com.folders.rentaly.model.User;
 import com.folders.rentaly.persistence.RealtyRepository;
 import com.folders.rentaly.persistence.UserRepository;
 
@@ -34,77 +34,58 @@ public class RealtyController {
 	@Autowired
 	private UserRepository userRepository;
 
-	@RequestMapping({"/realty", "/realty/new"})
+	@RequestMapping(value = "/realty/new")
 	public String newRealty(HttpSession session, ModelAndView model) {
 		Realty r = new Realty();
-		r.setOwner(userRepository.findById(Integer.parseInt(session.getAttribute("logged").toString())).get());
+		r.setOwner(Utilities.getUser(session, userRepository));
 		model.setViewName("realty");
 		model.addObject("realty", r);
 		return model.getViewName();
 	}
 
 	@GetMapping(value = "/realty/{realtyID}")
-	public ModelAndView realty(HttpSession session, @PathVariable("realtyID") String realtyID, ModelAndView model) {
-		Realty c = new Realty();
-		c.setDisplay_name("test diplay " + realtyID);
-		model.setViewName("realty");
-		model.addObject("realty", c);
+	public ModelAndView realty(HttpSession session, @PathVariable("realtyID") Integer realtyID, ModelAndView model) {
+		Optional<Realty> opt = realtyRepository.findByIdAndOwner(realtyID, Utilities.getUser(session, userRepository));
+		if (opt.isPresent()) {
+			model.addObject("realty", opt.get());
+			model.setViewName("realty");
+		} else {
+			model.setViewName("error");
+		}
 		return model;
-
-
-		// try {
-		// 	Integer id = Integer.parseInt(session.getAttribute("logged").toString());
-		// 	List<Realty> realties = realtyRepository.findByOwnerId(id);
-		// 	model.setViewName("realty");
-		// 	for (Realty r: realties) {
-		// 		if (r.getId().toString().equals(realtyID)) { //bad xD
-		// 			model.addObject("realty", r);
-		// 			// model.addObject("id", r.getId());
-		// 			// model.addObject("display_name", r.getOwner());
-		// 			// model.addObject("latitude", r.la)
-		// 			return model.getViewName();
-		// 		}
-		// 	}
-			
-		// 	log.info("requested realty " + realtyID + " not present for owner " + id.toString());
-		// 	return "error";
-			
-		// }
-		// catch (IllegalStateException e) {
-		// 	log.info("realty request for user not logged");
-		// }
-		// return "index";
 	}
 
-	@PostMapping(value = "/doSaveDraft", consumes={"application/json"})
+	@PostMapping(value = "/doSaveDraft", consumes = { "application/json" })
 	@ResponseBody
 	public ResponseEntity<String> doSaveDraft(HttpSession session, @RequestBody Realty realty) {
-		log.info("save draft " + realty.getId());			
+		log.info("save draft " + realty.getId());
 		try {
-			realty.setOwner(userRepository.findById(Integer.parseInt(session.getAttribute("logged").toString())).get());
+			realty.setOwner(Utilities.getUser(session, userRepository));
 			// realty.setIs_draft(true);
 			realtyRepository.save(realty);
+
 			return new ResponseEntity<>("succes", HttpStatus.OK);
 		} catch (Exception e) {
 			log.info(e.getStackTrace().toString());
 		}
 
-        return ResponseEntity.badRequest().body("error");
+		return ResponseEntity.badRequest().body("error");
 	}
 
-	@PostMapping(value = "/doSaveRealty", consumes={"application/json"})
+	@PostMapping(value = "/doSaveRealty", consumes = { "application/json" })
 	@ResponseBody
 	public ResponseEntity<String> doSaveRealty(HttpSession session, @Valid @RequestBody Realty realty) {
-		log.info("save realty " + realty.getId());			
+		log.info("save realty " + realty.getId());
 		try {
-			realty.setOwner(userRepository.findById(Integer.parseInt(session.getAttribute("logged").toString())).get());
-			//realty.setIs_draft(false);
+			realty.setOwner(Utilities.getUser(session, userRepository));
+			// realty.setIs_draft(false);
 			realtyRepository.save(realty);
+
 			return new ResponseEntity<>("succes", HttpStatus.OK);
 		} catch (Exception e) {
 			log.info(e.getStackTrace().toString());
 		}
 
-        return ResponseEntity.badRequest().body("error");
+		return ResponseEntity.badRequest().body("error");
 	}
 }

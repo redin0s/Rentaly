@@ -5,24 +5,25 @@
 
 <head>
 	<%@include file="includes/import.jsp" %>
-    <title>Realty</title>
-    <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.5.0/build/ol.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.5.0/css/ol.css">
+    <title>Immobile - Rentaly</title>
 </head>
 
 <body>
     <%@include file="includes/header.jsp" %>
+    <script src="../../js/realty.js"></script> <!--change later-->
     <br>
     <div class="container">
         <form method="post" action="updateRealty" id="realty">
 
             <input type="hidden" id="id">
-            <input type="hidden" id="user_id">
-            <input type="hidden" id="id">
+            <input type="hidden" id="display_name" value='${realty.display_name}'>
+            <input type="hidden" id="latitude" value='${realty.longitude}'>
+            <input type="hidden" id="longitude" value='${realty.longitude}'>
 
             <div class="row">
                 <div class="col-md-6">
                     <div id="map" class="map" style="width:100%;height:400px;" tabindex="0"></div>
+                    <script src="../../js/bingmaps/bingmaps.js"></script>
                     <script src="../../js/map.js" crossorigin></script>
                     <br>
                 </div>
@@ -43,7 +44,7 @@
 
                         <div class="col-md-9">
                             <div class="form-group">
-                                <input class="form-control" type="text" id="road" placeholder="Via" value='<c:out value="${realty.display_name}"/>'>
+                                <input class="form-control" type="text" id="road" placeholder="Via">
                             </div>
                         </div>
 
@@ -69,14 +70,14 @@
                             <label for="sqm">Metri quadri:</label>
                             <br>
                             <div class="form-group">
-                                <input class="form-control" type="number" id="sqm">
+                                <input class="form-control" type="number" id="square_meters" value='${realty.square_meters}'>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <label for="inq">Numero massimo di inquilini:</label>
                             <br>
                             <div class="form-group">
-                                <input class="form-control" type="number" id="inq">
+                                <input class="form-control" type="number" id="max_holders" value='${realty.max_holders}'>
                             </div>
                             <br>
                         </div>
@@ -96,15 +97,9 @@
                 </div>
             </div-->
             <div class="row">
-                <div class="col-sm-4">
-                    <button class="btn btn-primary btn-block" type="submit" id="undo">Annulla</button>
-                </div>
-                <div class="col-sm-4">
-                    <button class="btn btn-primary btn-block" type="submit" id="savedraft">Salva come bozza</button>
-                </div>
-                <div class="col-sm-4">
-                    <button class="btn btn-primary btn-block" type="submit" id="save">Salva</button>
-                </div>
+                <button class="btn btn-danger btn-block col-4" type="submit" id="undo" href="/realties">Annulla</button>
+                <button class="btn btn-light btn-block col-4" type="submit" id="savedraft">Salva bozza</button>
+                <button class="btn btn-primary btn-block col-4" type="submit" id="save">Salva</button>
             </div>
         </form>
     </div>

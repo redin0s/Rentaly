@@ -4,7 +4,7 @@
 
 <head>
 	<%@include file="includes/import.jsp" %>
-	<title>ProvaArticolo</title>
+	<title>Inserzione - Rentaly</title>
 </head>
 
 <body>
@@ -14,10 +14,10 @@
 			<div class="row">
 				<div class="col-md-3"></div>
 				<div class="col-md-4">
-					<h1>Title</h1>
+					<h1>${insertion.realty.display_name}</h1>
 				</div>
 				<div class="col-md-2">
-					<h1>Cost</h1>
+					<h1>Cost: ${insertion.cost} EUR</h1>
 				</div>
 				<div class="col-md-3"></div>
 			</div>
@@ -28,13 +28,13 @@
 					<div class="carousel slide" data-ride="carousel" id="carousel-1">
 						<div class="carousel-inner" role="listbox">
 							<div class="carousel-item active"><img class="w-100 d-block"
-									src="https://cdn.bootstrapstudio.io/placeholders/1400x800.png" alt="Slide Image">
+									src="${insertion.picture_1}" alt="Slide Image">
 							</div>
 							<div class="carousel-item"><img class="w-100 d-block"
-									src="https://cdn.bootstrapstudio.io/placeholders/1400x800.png" alt="Slide Image">
+									src="${insertion.picture_2}" alt="Slide Image">
 							</div>
 							<div class="carousel-item"><img class="w-100 d-block"
-									src="https://cdn.bootstrapstudio.io/placeholders/1400x800.png" alt="Slide Image">
+									src="${insertion.picture_3}" alt="Slide Image">
 							</div>
 						</div>
 						<div><a class="carousel-control-prev" href="#carousel-1" role="button" data-slide="prev"><span
@@ -55,18 +55,18 @@
 
 			<div class="row">
 				<div class="col-md-4">
-					<p>sqm</p>
+					<p>Square Meters: ${insertion.realty.square_meters}</p>
 				</div>
 				<div class="col-md-4">
-					<p>maxL</p>
+					<p>Max Holders: ${insertion.realty.max_holders}</p>
 				</div>
 				<div class="col-md-4">
-					<p>cont</p>
+					<p>Proprietario: ${insertion.realty.owner.email}</p>
 				</div>
 			</div>
 			<div class="row">
 				<div class="col-sm-12">
-					<p>desc</p>
+					<textarea class="form-control" id="desc" rows="5" readonly >${insertion.description}</textarea>
 				</div>
 			</div>
 
