@@ -22,30 +22,28 @@ import org.springframework.web.servlet.ModelAndView;
 import com.folders.rentaly.Utilities;
 import com.folders.rentaly.model.Realty;
 import com.folders.rentaly.persistence.RealtyRepository;
-import com.folders.rentaly.persistence.UserRepository;
 
 @Controller
+@RequestMapping(value = "/realty")
 public class RealtyController {
 	private static final Logger log = LoggerFactory.getLogger(RealtyController.class);
 
 	@Autowired
 	private RealtyRepository realtyRepository;
 
-	@Autowired
-	private UserRepository userRepository;
-
-	@RequestMapping(value = "/realty/new")
-	public String newRealty(HttpSession session, ModelAndView model) {
+	@RequestMapping(value = "/new")
+	public ModelAndView newRealty(HttpSession session, ModelAndView model) {
 		Realty r = new Realty();
-		r.setOwner(Utilities.getUser(session, userRepository));
+		r.setOwner(Utilities.getUser(session));
+		r.setDraft(true);
 		model.setViewName("realty");
 		model.addObject("realty", r);
-		return model.getViewName();
+		return model;
 	}
 
-	@GetMapping(value = "/realty/{realtyID}")
+	@GetMapping(value = "/{realtyID}")
 	public ModelAndView realty(HttpSession session, @PathVariable("realtyID") Integer realtyID, ModelAndView model) {
-		Optional<Realty> opt = realtyRepository.findByIdAndOwner(realtyID, Utilities.getUser(session, userRepository));
+		Optional<Realty> opt = realtyRepository.findByIdAndOwner(realtyID, Utilities.getUser(session));
 		if (opt.isPresent()) {
 			model.addObject("realty", opt.get());
 			model.setViewName("realty");
@@ -58,32 +56,31 @@ public class RealtyController {
 	@PostMapping(value = "/doSaveDraft", consumes = { "application/json" })
 	@ResponseBody
 	public ResponseEntity<String> doSaveDraft(HttpSession session, @RequestBody Realty realty) {
-		log.info("save draft " + realty.getId());
-		try {
-			realty.setOwner(Utilities.getUser(session, userRepository));
-			// realty.setIs_draft(true);
-			realtyRepository.save(realty);
-
-			return new ResponseEntity<>("succes", HttpStatus.OK);
-		} catch (Exception e) {
-			log.info(e.getStackTrace().toString());
-		}
-
-		return ResponseEntity.badRequest().body("error");
+		return doXRealty(session, realty, true);
 	}
 
 	@PostMapping(value = "/doSaveRealty", consumes = { "application/json" })
 	@ResponseBody
-	public ResponseEntity<String> doSaveRealty(HttpSession session, @Valid @RequestBody Realty realty) {
-		log.info("save realty " + realty.getId());
-		try {
-			realty.setOwner(Utilities.getUser(session, userRepository));
-			// realty.setIs_draft(false);
-			realtyRepository.save(realty);
+	public ResponseEntity<String> doSaveRealty(HttpSession session, @RequestBody @Valid Realty realty) {
+		return doXRealty(session, realty, false);
+	}
 
-			return new ResponseEntity<>("succes", HttpStatus.OK);
+	private ResponseEntity<String> doXRealty(HttpSession session, Realty realty, Boolean draft) {
+		log.info("save realty " + realty.toString());
+		try {
+			if (realty.getId() != null) {
+				Optional<Realty> opt = realtyRepository.findById(realty.getId());
+				if (opt.isPresent() && !opt.get().getOwner().equals(Utilities.getUser(session))) {
+					return ResponseEntity.badRequest().body("error");
+				}
+			}	
+			realty.setOwner(Utilities.getUser(session));
+			realty.setDraft(draft);
+			realtyRepository.save(realty);
+			return new ResponseEntity<>("success", HttpStatus.OK);
+			
 		} catch (Exception e) {
-			log.info(e.getStackTrace().toString());
+			log.info(e.getMessage());
 		}
 
 		return ResponseEntity.badRequest().body("error");

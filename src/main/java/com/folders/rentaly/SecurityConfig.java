@@ -33,23 +33,30 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .requiresSecure();
 
         /////// USE THIS ONLY FOR TESTING PURPOSES
-        http 
-            .authorizeRequests()
-            .anyRequest()
-            .permitAll();
+        // http 
+        //     .authorizeRequests()
+        //     .anyRequest()
+        //     .permitAll();
         http
             .cors().disable();
         http
             .csrf().disable();
         
         // TODO
-        // http
-        //     .authorizeRequests()
-        //     .antMatchers("/", "/index", "/register") //Here are the public paths
-        //         .permitAll()
-        //     .antMatchers("/account")    //Here only the "require authentication"
-        //         .authenticated();
+        http
+            .authorizeRequests()
+            .antMatchers(
+                        "/",
+                        "/index",
+                        "/register",
+                        "/login",
+                        "https://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css",
+                        "https://www.bing.com/fd/ls/*") //Here are the public paths
+                .permitAll()
+            .antMatchers("/account", "/myRealties" , "/realty/*")    //Here only the "require authentication"
+                .authenticated();
             
+
 
         http
             .formLogin()

@@ -1,5 +1,6 @@
 package com.folders.rentaly.model;
 
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -21,8 +22,9 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "saved_search", schema = "prova")
 public class SavedSearch {
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+
+    @Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     private String location;

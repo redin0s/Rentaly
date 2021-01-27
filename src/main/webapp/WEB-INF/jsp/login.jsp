@@ -28,19 +28,18 @@
             <div class="form-group">
                 <button class="btn btn-primary btn-block" type="submit">Accedi</button>
             </div>
-        </form>
-            
-        <c:choose>
-            <c:when test="${param.error != null}">
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <p id="error">Email o password sbagliata. <a href="#">Hai dimenticato la password?</a> </p>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            </c:when>
-        </c:choose>
 
-        <p class="bottom">Non hai ancora un account? <a href="register">Registrati</a></p>
-        
+            <c:choose>
+                <c:when test="${param.error != null}">
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <p id="error">Email o password sbagliata. <a href="#">Hai dimenticato la password?</a> </p>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                </c:when>
+            </c:choose>
+
+          <p class="bottom">Non hai ancora un account? <a href="register">Registrati</a></p>
+        </form>
     </div> 
 
 </body>

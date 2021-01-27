@@ -10,6 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.Digits;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,13 +25,15 @@ import lombok.NoArgsConstructor;
 @Table(name = "check", schema = "prova")
 public class Check {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(columnDefinition = "character varying(255)")
     private String check_type;
 
     @Column(columnDefinition = "numeric(10,2)")
+    @DecimalMin("0.0")
+    @Digits(integer=6, fraction =2)
     private Float cost;
 
     private LocalDate expire;

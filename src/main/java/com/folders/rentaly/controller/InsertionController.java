@@ -1,13 +1,10 @@
 package com.folders.rentaly.controller;
 
-import java.time.LocalDate;
 import java.util.Optional;
 
 import javax.servlet.http.HttpSession;
 
 import com.folders.rentaly.model.Insertion;
-import com.folders.rentaly.model.Realty;
-import com.folders.rentaly.model.User;
 import com.folders.rentaly.persistence.InsertionRepository;
 
 import org.slf4j.Logger;
@@ -27,8 +24,9 @@ public class InsertionController {
 	private InsertionRepository insertionRepository;
 
 	@GetMapping(value = "/insertion/{insertionID}")
-	public ModelAndView insertion(HttpSession session, @PathVariable("insertionID") Integer insertionID, ModelAndView model) {
+	public ModelAndView insertionWithID(HttpSession session, @PathVariable("insertionID") Integer insertionID, ModelAndView model) {
 		Optional<Insertion> opt = insertionRepository.findById(insertionID);
+		log.info(String.format("got insertion with id %id", insertionID.intValue()));
 		if (opt.isPresent()) {
 			model.addObject("insertion", opt.get());
 			model.setViewName("insertion");
@@ -37,4 +35,5 @@ public class InsertionController {
 		}
 		return model;
 	}
+
 }

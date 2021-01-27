@@ -18,8 +18,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 public class Utilities {
 
-	//TODO NOT TO DO THIS
-	public static User getUser(HttpSession session, UserRepository userRepository) {
+	private static UserRepository userRepository;
+
+	public static void setUserRepository(UserRepository userRepository) {
+		Utilities.userRepository = userRepository;
+	}
+
+	public static User getUser(HttpSession session) {
 		SecurityContext s = (SecurityContext) session.getAttribute("SPRING_SECURITY_CONTEXT");
 		UserDetails ud = (UserDetails) s.getAuthentication().getPrincipal();
 		User user = userRepository.findByEmail(ud.getUsername());
