@@ -1,5 +1,9 @@
 $(document).ready(
     function() {
+        $('.it-date-datepicker').datepicker({
+            dateFormat: 'dd/mm/yy'
+        });
+
         $("#addHolder").on("click", function(event) {
             event.preventDefault();
             console.log("adding holder");
@@ -8,7 +12,7 @@ $(document).ready(
 
         function getFormData() {
             return {
-                realty_id : $("#rent-realty").val(),
+                realty_id : window.selected.toString(),
                 user_email : $("#rent-user_email").val(),
                 cost : $("#rent-cost").val(),
                 start : $("#rent-start_date").val(),
@@ -18,14 +22,26 @@ $(document).ready(
 
         function ajaxAddHolderPost() {
 
+            var csrfHeader = $("meta[name='_csrf_header']").attr("content");
+            var csrfToken = $("meta[name='_csrf']").attr("content");
+            var headers = {};
+
+            headers[csrfHeader] = csrfToken;
+
+            var d = getFormData();
+            console.log(d);
+
             $.ajax({
 				type : "POST",
 				contentType : "application/json",
-				url : "/doAddHolder",
-				data : JSON.stringify(getFormData()),
+				url : "/myRealties/doAddHolder",
+                data : JSON.stringify(d),
+                headers : headers,
+                headers : headers,
 				success : function (data, status, xhr) {
                     console.log(data);
 					if (data == "success") {
+                        window.location = "/myRealties";
                         console.log("Successfully added holder.");
                     }
                     else {
@@ -37,3 +53,8 @@ $(document).ready(
         }
 
     });
+
+function setSelected(id) {
+    window.selected = id;
+    console.log(window.selected);
+}

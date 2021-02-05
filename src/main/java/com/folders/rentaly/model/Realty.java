@@ -17,7 +17,6 @@ import javax.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Builder.Default;
 
 @Data
 @AllArgsConstructor
@@ -37,7 +36,9 @@ public class Realty implements Serializable{
     private Double longitude;
 
     @Column(columnDefinition = "character varying(255)")
-    private String type;
+	private String type;
+
+
 
     @Min(1)
     private Integer square_meters;

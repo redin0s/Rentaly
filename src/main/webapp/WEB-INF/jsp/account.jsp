@@ -34,7 +34,9 @@
             <!--div class="intro">
                 <p class="text-center">This is the second text</p>
             </div-->
-            <div class="buttons"><a class="btn btn-light" role="button" href="/edit">Gestione account</a></div>
+            <div class="buttons">
+                <a class="btn btn-light" role="button" href="/edit">Gestione account</a>
+            </div>
 
         </div>  
     </div>  

@@ -11,5 +11,6 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface RentRepository extends CrudRepository<Rent, Integer> {
     List<Rent> findByRealty(Realty realty);
-    List<Rent> findByRealty_OwnerAndEndGreaterThanEqual(User owner, LocalDate end_date);
+    List<Rent> findByRealty_OwnerAndEndGreaterThanEqual(User owner, LocalDate end);
+    List<Rent> findByHolderAndEndGreaterThanEqual(User holder, LocalDate end);
 }

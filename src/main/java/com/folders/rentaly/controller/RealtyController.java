@@ -85,4 +85,5 @@ public class RealtyController {
 
 		return ResponseEntity.badRequest().body("error");
 	}
+
 }

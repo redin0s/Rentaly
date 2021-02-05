@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 <html>
 
@@ -7,6 +8,7 @@
 	<%@include file="includes/import.jsp" %>
 	<title>Accedi - Rentaly</title>
     <link rel="stylesheet" href="../../../css/Login-Register.css">
+    <sec:csrfMetaTags />
 </head>
 
 <body>
@@ -24,6 +26,7 @@
             <div class="form-group">
                 <input class="form-control" type="password" name="password" id="password" placeholder="Password">
             </div>
+            <sec:csrfInput />
 
             <div class="form-group">
                 <button class="btn btn-primary btn-block" type="submit">Accedi</button>

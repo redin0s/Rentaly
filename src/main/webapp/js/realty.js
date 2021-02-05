@@ -48,7 +48,7 @@ $(document).ready(
                         //pictures?
                         cost : $("#cost").val()
                     };
-            return {
+            var r = {
                 id : $("#id").val(),
                 city : $("#city").val(),
                 address : $("#address").val(),
@@ -60,15 +60,31 @@ $(document).ready(
                 current_holders : 0,
                 insertion : i
             };
+
+            if (r.square_meters == "" || r.square_meters == null) {
+                r.square_meters = 1;
+            }
+            if (r.max_holders == "" || r.max_holders == null) {
+                r.max_holders = 0;
+            }
+            return r;
         }
 
         function ajaxDraftPost() {
+
+            var csrfHeader = $("meta[name='_csrf_header']").attr("content");
+            var csrfToken = $("meta[name='_csrf']").attr("content");
+            var headers = {};
+
+            headers[csrfHeader] = csrfToken;
+
 
             $.ajax({
 				type : "POST",
 				contentType : "application/json",
 				url : "doSaveDraft",
-				data : JSON.stringify(getFormData()),
+                data : JSON.stringify(getFormData()),
+                headers : headers,
 				success : function (data, status, xhr) {
                     console.log(data);
 					if (data == "success") {
@@ -85,11 +101,19 @@ $(document).ready(
 
         function ajaxSavePost() {
 
+            var csrfHeader = $("meta[name='_csrf_header']").attr("content");
+            var csrfToken = $("meta[name='_csrf']").attr("content");
+            var headers = {};
+
+            headers[csrfHeader] = csrfToken;
+
+
             $.ajax({
 				type : "POST",
 				contentType : "application/json",
 				url : "doSaveRealty",
-				data : JSON.stringify(getFormData()),
+                data : JSON.stringify(getFormData()),
+                headers : headers,
 				success : function (data, status, xhr) {
                     console.log(data);
 					if (data == "success") {

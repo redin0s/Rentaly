@@ -1,6 +1,7 @@
 package com.folders.rentaly.controller;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -21,7 +22,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+
+import net.minidev.json.JSONObject;
 
 @Controller
 public class AccountController {
@@ -38,8 +43,9 @@ public class AccountController {
     private UserRepository userRepository;
     
     @GetMapping("/account")           
-	public String account() {
-		return "account";
+	public ModelAndView account(ModelAndView model) {
+        model.setViewName("account");
+		return model;
 	}
 
     @GetMapping("/myRealties")    
@@ -53,28 +59,52 @@ public class AccountController {
         model.addObject("realties", realties);
         model.addObject("drafts", drafts);
         model.addObject("rents", rents);
-        log.info(String.format("got realties from user %s", user.getEmail()));
-
+        log.info(String.format("got myrealties for owner %s", user.getEmail()));
+        if(rents.size() == 0) {
+            log.info("no rents here");
+        }
         return model;
     }
     
 
-    @PostMapping(value = "/doAddHolder", consumes={"application/json"})
-    public ResponseEntity<String> doAddHolder(HttpSession session, Integer realty_id, String user_email, Integer cost, LocalDate start, Integer duration) {
-        User holder = userRepository.findByEmail(user_email);
+    @PostMapping(value = "/myRealties/doAddHolder", consumes={"application/json"})
+    @ResponseBody
+    public ResponseEntity<String> doAddHolder(HttpSession session, @RequestBody JSONObject content) {
+        log.info(content.toString());
+        try {
+            User holder = userRepository.findByEmail(content.getAsString("user_email"));
+            // User user = Utilities.getUser(session);
+            Realty realty = realtyRepository.findById(Integer.valueOf(content.getAsNumber("realty_id").intValue())).get();
+            Rent rent = new Rent();
+            rent.setRealty(realty);
+            rent.setHolder(holder);
+            rent.setCost(content.getAsNumber("cost").intValue());
+            rent.setStart(LocalDate.parse(content.getAsString("start"),DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+            LocalDate end = rent.getStart();
+            end = end.plusMonths(content.getAsNumber("duration").intValue());
+            // log.info("start: " + start + start.toString());
+            // log.info("end: " + end + end.toString());
+            rent.setEnd(end);
+            rentRepository.save(rent);
+            return new ResponseEntity<String>("success", HttpStatus.OK);
+
+        } catch (Exception e) {
+            log.info(e.getMessage());
+        }
+        return new ResponseEntity<String>("error", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @GetMapping("/myRents")    
+	public ModelAndView myRents(HttpSession session, ModelAndView model) {
         User user = Utilities.getUser(session);
-        Realty realty = realtyRepository.findById(realty_id).get();
-        Rent rent = new Rent();
-        rent.setRealty(realty);
-        rent.setHolder(holder);
-        rent.setCost(cost);
-        rent.setStart(start);
-        LocalDate end = start;
-        log.info("start: " + start + start.toString());
-        log.info("end: " + end + end.toString());
-        end.plusMonths(duration);
-        rent.setEnd(end);
-        return new ResponseEntity<String>("success", HttpStatus.OK);
+        List<Rent> rents = rentRepository.findByHolderAndEndGreaterThanEqual(user, LocalDate.now());
+        model.setViewName("myrents");
+        model.addObject("rents", rents);
+        log.info(String.format("got myrents from holder %s", user.getEmail()));
+        if(rents.size() == 0) {
+            log.info("no rents here");
+        }
+        return model;
     }
 }
 

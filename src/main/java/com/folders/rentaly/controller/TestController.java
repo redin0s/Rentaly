@@ -58,8 +58,13 @@ public class TestController {
 
 	@GetMapping("/exit")
 	public void exitfun() {
-		System.out.println("mi ndi vaju alla casa");
+		System.out.println("Shutdown");
 		System.exit(10);
+	}
+
+	@GetMapping("/dashboard")
+	public String provadash() {
+		return "dashboard";
 	}
 	
 }

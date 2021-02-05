@@ -1,9 +1,17 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
 <link rel="stylesheet" href="../../../css/Header.css">
-<div class="header-blue">
+<div class="header">
     <nav class="navbar navbar-light navbar-expand-md navigation-clean-search">
         <div class="container-fluid">
+
+            <c:if test="${param.account == 1}">
+                <button type="button" id="sidebarCollapse" class="btn btn-dark d-md-none">
+                    <i class="fas fa-align-justify"></i>
+                </button>
+                <script src="../../../js/sidebar.js"></script>
+            </c:if>
+
             <a class="navbar-brand" href="/index">Rentaly</a>
             <div class="justify-content-right" id="navcol-1">
                 <c:choose>
@@ -25,9 +33,6 @@
         </div>
     </nav>
 </div>
-
-
-
 
 <%-- <!--<form class="form-inline mr-auto" target="_self">
     <div class="form-group"><label for="search-field"><i class="fa fa-search"></i></label><input class="form-control search-field" type="search" id="search-field" name="search"></div>

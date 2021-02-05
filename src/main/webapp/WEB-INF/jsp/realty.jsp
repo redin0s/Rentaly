@@ -1,11 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 <html>
 
 <head>
 	<%@include file="includes/import.jsp" %>
     <title>Immobile - Rentaly</title>
+    <sec:csrfMetaTags />
 </head>
 
 <body>
@@ -15,6 +17,7 @@
     <div class="container">
         <form id="realty">
 
+            <sec:csrfInput />
             <input type="hidden" id="id" value='${realty.id}'>
             <input type="hidden" id="latitude" value='${realty.longitude}'>
             <input type="hidden" id="longitude" value='${realty.longitude}'>
@@ -63,14 +66,14 @@
                             <label for="sqm">Metri quadri:</label>
                             <br>
                             <div class="form-group">
-                                <input class="form-control" type="number" min="1" id="square_meters" value='${realty.square_meters}'>
+                                <input class="form-control" type="number" min="1" id="square_meters" value='${realty.square_meters}' placeholder="0">
                             </div>
                         </div>
                         <div class="col-lg-6">
                             <label for="inq">Numero massimo di inquilini:</label>
                             <br>
                             <div class="form-group">
-                                <input class="form-control" type="number" id="max_holders" value='${realty.max_holders}'>
+                                <input class="form-control" type="number" id="max_holders" value='${realty.max_holders}' placeholder="Nessuno">
                             </div>
                             <br>
                         </div>
