@@ -25,6 +25,36 @@ CREATE SCHEMA prova;
 
 ALTER SCHEMA prova OWNER TO postgres;
 
+--
+-- Name: addingholdertorealty(); Type: FUNCTION; Schema: prova; Owner: postgres
+--
+
+CREATE FUNCTION prova.addingholdertorealty() RETURNS trigger
+LANGUAGE plpgsql
+AS $$
+DECLARE
+max_h integer;
+current_h integer;
+BEGIN
+    SELECT max_holders, current_holders
+    INTO max_h, current_h
+    FROM prova.realty
+    WHERE id = NEW.realty_id;
+
+    IF current_h = max_h THEN
+        RAISE EXCEPTION 'max holders reached';
+    ELSE
+        UPDATE prova.realty
+        SET current_holders = current_holders + 1
+        WHERE id = NEW.realty_id;
+END IF;
+RETURN NEW;
+END;
+$$;
+
+
+ALTER FUNCTION prova.addingholdertorealty() OWNER TO postgres;
+
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
@@ -213,7 +243,7 @@ COPY prova."check" (id, check_type, cost, expire, rent_id, holder_id) FROM stdin
 
 COPY prova.insertion (id, description, cost, publish_date, images, is_visible) FROM stdin;
 2       jnjjnj ahiudahd ads     12      \N      \N      t
-3       casa di poco conto, grande il giusto e lussuosa,,,,, astenersi affaristi NO PERDITEMPO  31984   \N      \N    f
+3       casa di poco conto, grande il giusto e lussuosa,,,,, astenersi affaristi NO PERDITEMPO  31984   \N      \N      f
 \.
 
 
@@ -222,21 +252,21 @@ COPY prova.insertion (id, description, cost, publish_date, images, is_visible) F
 --
 
 COPY prova.realty (id, type, square_meters, max_holders, owner_id, latitude, longitude, insertion_id, city, address, is_draft, current_holders) FROM stdin;
-6       Appartamento    331     5       10      41.9680452      12.1343753      3       Cerveteri       Via di Ceri 127f       0
-9       Appartamento    1       1       7       41.8222822      12.7479728      \N      Monte Compatri  Via Valle Sole delle Carracce 1/2      f       0
+6       Appartamento    331     5       10      41.9680452      12.1343753      3       Cerveteri       Via di Ceri 127 f       0
+9       Appartamento    1       1       7       41.8222822      12.7479728      \N      Monte Compatri  Via Valle Sole delle Carracce 1/2       f       0
 3       Appartamento    123     12      7       12.5901465      12.5901465      \N      Rome            f       0
-4       Appartamento    43      12      7       41.7822435      12.9362439      \N      Valmontone      Via Genazzano 102      f       1
-12      Appartamento    10      10      11      41.7951256      12.5428023      \N      Roma    Via di Fioranello 172 f1
-11      Appartamento    12      3       9       42.3275595      13.4072547      \N      L'Aquila        Via della Gazzaf       1
-24      Appartamento    10      0       9       42.0031055      12.3402076      \N      Roma    Via Enrico Bemporad   t0
-25      Appartamento    1       0       9       42.0174366      12.6696762      \N      Mentana Via di Fonte Lettiga 69t       0
-22      Appartamento    55      3       9       41.9092513      12.4939532      \N      Roma    Via Sicilia 145 f     1
-13      Appartamento    10      4       6       38.8682585      16.6035454      \N      Catanzaro       Via Umbria 18 f2
-26      Appartamento    1       2       13      41.7576286      12.6402384      \N      Marino  Strada Statale 140 Bis 71      f       1
-27      Appartamento    30      4       14      41.6183833      13.3851313      \N      Torrice Via Gennare 104A      f1
-28      Villetta a schiera      11      1       7       41.644685       12.521359       \N      Pomezia Via dei Frassini 27    f       0
-5       Appartamento    123     23      7       41.8640795      12.485901       2       Roma    Largo Giovanni Ansaldo 8       f       1
-10      Appartamento    1       1       7       38.8891245      16.6282785      \N      Catanzaro       Via Costa Leone Nobile 8       f       1
+4       Appartamento    43      12      7       41.7822435      12.9362439      \N      Valmontone      Via Genazzano 102       f       1
+12      Appartamento    10      10      11      41.7951256      12.5428023      \N      Roma    Via di Fioranello 172   f       1
+11      Appartamento    12      3       9       42.3275595      13.4072547      \N      L'Aquila        Via della Gazza f       1
+24      Appartamento    10      0       9       42.0031055      12.3402076      \N      Roma    Via Enrico Bemporad     t       0
+25      Appartamento    1       0       9       42.0174366      12.6696762      \N      Mentana Via di Fonte Lettiga 69 t       0
+22      Appartamento    55      3       9       41.9092513      12.4939532      \N      Roma    Via Sicilia 145 f       1
+13      Appartamento    10      4       6       38.8682585      16.6035454      \N      Catanzaro       Via Umbria 18   f       2
+26      Appartamento    1       2       13      41.7576286      12.6402384      \N      Marino  Strada Statale 140 Bis 71       f       1
+27      Appartamento    30      4       14      41.6183833      13.3851313      \N      Torrice Via Gennare 104A        f       1
+28      Villetta a schiera      11      1       7       41.644685       12.521359       \N      Pomezia Via dei Frassini 27     f       0
+5       Appartamento    123     23      7       41.8640795      12.485901       2       Roma    Largo Giovanni Ansaldo 8        f       1
+10      Appartamento    1       1       7       38.8891245      16.6282785      \N      Catanzaro       Via Costa Leone Nobile 8        f       1
 \.
 
 
@@ -427,7 +457,7 @@ CREATE UNIQUE INDEX index5 ON prova.saved_search USING btree (id);
 -- Name: rent addholder; Type: TRIGGER; Schema: prova; Owner: postgres
 --
 
-CREATE TRIGGER addholder BEFORE INSERT ON prova.rent FOR EACH ROW EXECUTE FUNCTION public.addingholdertorealty();
+CREATE TRIGGER addholder BEFORE INSERT ON prova.rent FOR EACH ROW EXECUTE FUNCTION prova.addingholdertorealty();
 
 
 --
