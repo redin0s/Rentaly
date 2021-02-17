@@ -19,9 +19,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.folders.rentaly.Utilities;
 import com.folders.rentaly.model.Realty;
-import com.folders.rentaly.persistence.RealtyRepository;
+import com.folders.rentaly.persistence.dao.RealtyDAO;
+import com.folders.rentaly.service.CustomUserDetailService;
 
 @Controller
 @RequestMapping(value = "/realty")
@@ -29,12 +29,15 @@ public class RealtyController {
 	private static final Logger log = LoggerFactory.getLogger(RealtyController.class);
 
 	@Autowired
-	private RealtyRepository realtyRepository;
+	private RealtyDAO realtyDAO;
+	
+	@Autowired
+	private CustomUserDetailService customUserDetailService;
 
 	@RequestMapping(value = "/new")
 	public ModelAndView newRealty(HttpSession session, ModelAndView model) {
 		Realty r = new Realty();
-		r.setOwner(Utilities.getUser(session));
+		r.setOwner(customUserDetailService.getUser(session).get());
 		r.setDraft(true);
 		model.setViewName("realty");
 		model.addObject("realty", r);
@@ -43,7 +46,7 @@ public class RealtyController {
 
 	@GetMapping(value = "/{realtyID}")
 	public ModelAndView realty(HttpSession session, @PathVariable("realtyID") Integer realtyID, ModelAndView model) {
-		Optional<Realty> opt = realtyRepository.findByIdAndOwner(realtyID, Utilities.getUser(session));
+		Optional<Realty> opt = realtyDAO.findByIdAndOwner(realtyID, customUserDetailService.getUser(session).get());
 		if (opt.isPresent()) {
 			model.addObject("realty", opt.get());
 			model.setViewName("realty");
@@ -69,14 +72,14 @@ public class RealtyController {
 		log.info("save realty " + realty.toString());
 		try {
 			if (realty.getId() != null) {
-				Optional<Realty> opt = realtyRepository.findById(realty.getId());
-				if (opt.isPresent() && !opt.get().getOwner().equals(Utilities.getUser(session))) {
+				Optional<Realty> opt = realtyDAO.get(realty.getId());
+				if (opt.isPresent() && !opt.get().getOwner().equals(customUserDetailService.getUser(session))) {
 					return ResponseEntity.badRequest().body("error");
 				}
 			}	
-			realty.setOwner(Utilities.getUser(session));
+			realty.setOwner(customUserDetailService.getUser(session).get());
 			realty.setDraft(draft);
-			realtyRepository.save(realty);
+			realtyDAO.save(realty);
 			return new ResponseEntity<>("success", HttpStatus.OK);
 			
 		} catch (Exception e) {

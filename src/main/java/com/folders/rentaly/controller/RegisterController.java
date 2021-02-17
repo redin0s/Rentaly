@@ -15,19 +15,19 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.folders.rentaly.model.User;
-import com.folders.rentaly.persistence.CustomUserDetailService;
-import com.folders.rentaly.persistence.UserRepository;
+import com.folders.rentaly.persistence.dao.UserDAO;
+import com.folders.rentaly.service.CustomUserDetailService;
 
 @Controller
 public class RegisterController {
 	private static final Logger log = LoggerFactory.getLogger(RegisterController.class);
 	
 	@Autowired
-	private UserRepository userRepository;
+	private UserDAO userDAO;
 
 	@Autowired
 	private CustomUserDetailService customUserDetailService;
-	
+
 	@GetMapping({"/" , "/index"})
 	public String index() {
 		return "index";
@@ -45,19 +45,20 @@ public class RegisterController {
 		HttpStatus status = HttpStatus.CONFLICT;
 		log.info(user.toString());
 
-		if (userRepository.findByEmail(user.getEmail()) != null) {
+		if (userDAO.findUser(user.getEmail()).isPresent()) {
 			response = "existing user";
 		}
 		else {
 			try {
 				customUserDetailService.saveUser(user);
+
 				response = "success";
 				status = HttpStatus.OK;
-				// session.setAttribute("logged", user.getEmail());
 			}
 			catch (Exception e) {
 				response = "error";
 				status = HttpStatus.INTERNAL_SERVER_ERROR;
+				log.error(e.getMessage());
 			}
 		}
         return new ResponseEntity<String>(response, status);

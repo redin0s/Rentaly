@@ -1,6 +1,6 @@
 package com.folders.rentaly;
 
-import com.folders.rentaly.persistence.CustomUserDetailService;
+import com.folders.rentaly.service.CustomUserDetailService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -38,18 +38,25 @@ public class Configurations {
                 // http.csrf().disable();
 
                 http.authorizeRequests()
-                        .antMatchers("/", "/index", "/register", "/login", "/prova/*",
+                        .antMatchers("/", "/index", "/register", "/login", "/prova/*", "/validate",
                                 "https://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css",
                                 "https://www.bing.com/fd/ls/*") // Here are the public paths
-                        .permitAll().antMatchers("/account", "/myRealties", "/realty/*", "/myRents") // Here only the
-                                                                                                     // "require
-                                                                                                     // authentication"
-                        .authenticated();
+                            .permitAll()
+                        .antMatchers("/account", "/realty/*")
+                            .authenticated()
+                        .antMatchers("/realty/*")
+                            .hasAuthority("USER");
 
-                http.formLogin().loginPage("/login") // set login page
-                        .permitAll().defaultSuccessUrl("/account").usernameParameter("email") // parameters taken from
-                                                                                              // the form
-                        .passwordParameter("password").and().logout().logoutUrl("/logout").permitAll();
+                http.formLogin()
+                        .loginPage("/login") // set login page
+                            .permitAll()
+                        .defaultSuccessUrl("/account")
+                        .usernameParameter("email")    // parameters taken from                                            
+                        .passwordParameter("password") // the form
+                    .and()
+                        .logout()
+                            .logoutUrl("/logout")
+                                .permitAll();
             }
         };
     }

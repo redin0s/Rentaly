@@ -10,6 +10,45 @@
 	<body>
 		<%@include file="includes/header.jsp" %>
 
+			<div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+				<!--<ol class="carousel-indicators">
+					<li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+					<li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+					<li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+				</ol>-->
+				<div class="carousel-inner" role="listbox">
+					<!-- Slide One - Set the background image for this slide in the line below -->
+					<div class="carousel-item active"
+						<img src="https://source.unsplash.com/LAaSoL0LrYs/1920x1080" class="d-block w-100">
+					</div>
+					<!-- Slide Two - Set the background image for this slide in the line below -->
+					<div class="carousel-item"
+						<img src="https://source.unsplash.com/bF2vsubyHcQ/1920x1080" class="d-block w-100">
+					</div>
+					<!-- Slide Three - Set the background image for this slide in the line below -->
+					<div class="carousel-item"
+						<img src="https://source.unsplash.com/szFUQoyvrxM/1920x1080" class="d-block w-100">
+						<!--<section id="hero">
+							<div class="hero-container">
+								<h1>Benvenuto nomeutente</h1>
+								<h2>Cosa vuoi fare oggi?</h2>
+								<div class="container">
+									<a href="/account" class="btn-green">Area Personale</a>
+								</div>
+							</div>
+						</section>-->
+					</div>
+				</div>
+				<!--<a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+					<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+					<span class="sr-only">Previous</span>
+				</a>
+				<a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+					<span class="carousel-control-next-icon" aria-hidden="true"></span>
+					<span class="sr-only">Next</span>
+				</a>-->
+			</div>
+
 			<section id="hero">
 				<div class="hero-container">
 					<c:choose>
@@ -29,23 +68,9 @@
 					</c:choose>
 
 				</div>
-			</section>
-
-			<%-- @include file="includes/searchbar.jsp" --%>
-
-
-				<%-- <div class="generic">
-					<div class="container hero">
-						<div class="row">
-							<div class="col-12 col-lg-6 col-xl-5 offset-xl-1">
-								<h1>Affitta. Velocemente.</h1>
-								<p>Sei pronto a trovare il tuo nuovo appartamento?</p>
-								<button class="btn btn-light btn-lg action-button" type="button">Cerca la tua nuova
-									casa</button>
-							</div>
-						</div>
-					</div>
-					</div>
-					--%>
+				</section>
+		
+		<%@include file="includes/footer.jsp" %>
 	</body>
+
 	</html>

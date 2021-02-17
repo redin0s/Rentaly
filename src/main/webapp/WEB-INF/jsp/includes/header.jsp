@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <link rel="stylesheet" href="../../../css/Header.css">
 <div class="header">
     <nav class="navbar navbar-light navbar-expand-md navigation-clean-search">
@@ -17,9 +18,13 @@
                 <c:choose>
                     <c:when test = '${pageContext.request.userPrincipal.authenticated == true}'>
                         <span class="navbar-text"> 
-                            <a class="btn login" href="/account">Account</a>
+                            <a class="btn login" href="/account"><i class="fas fa-user"></i> ${pageContext.request.userPrincipal.name}</a>
                         </span>
-                        <a class="btn btn-light action-button" role="button" href="/logout">Logout</a>
+                        <form class="btn" method="post" action="/logout">
+                            <sec:csrfInput />
+                            <button class="btn-light action-button" type="submit"><i class="fas fa-sign-out-alt"></i></button>
+                        </form>
+                        <!-- <a class="btn btn-light action-button" role="button" href="/logout">Logout</a> -->
                     </c:when>
             
                     <c:otherwise>
@@ -33,7 +38,3 @@
         </div>
     </nav>
 </div>
-
-<%-- <!--<form class="form-inline mr-auto" target="_self">
-    <div class="form-group"><label for="search-field"><i class="fa fa-search"></i></label><input class="form-control search-field" type="search" id="search-field" name="search"></div>
-</form> --> --%>

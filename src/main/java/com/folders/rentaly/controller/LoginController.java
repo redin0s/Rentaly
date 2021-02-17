@@ -1,7 +1,5 @@
 package com.folders.rentaly.controller;
 
-import javax.servlet.http.HttpSession;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -13,12 +11,5 @@ public class LoginController {
 	public String login() {
 		return "login";
 	}
-	
-	// @GetMapping("/logout")
-	// public String logout(HttpSession session) {
-	// 	session.invalidate();
-		
-	// 	return "index";
-	// }
 	
 }

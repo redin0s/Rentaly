@@ -3,12 +3,27 @@ body {
     background: #fafafa;
 }
 
+a {
+    color: #4aa05e;
+}
+
+a:hover {
+    color: #155724;
+}
+
+generic-alert{
+    margin:auto;
+}
+
+.alert {
+    margin-bottom: 0;
+}
+
 /*  HERO CONTAINER  */
 
 #hero {
     width: 100%;
     height: 80vh;
-    background: url("https://remax4you.it/wp-content/uploads/2018/03/truffa-affitto-1.jpg") top center;
     background-size: cover;
     position: relative;
     border-bottom: 1px solid #222;

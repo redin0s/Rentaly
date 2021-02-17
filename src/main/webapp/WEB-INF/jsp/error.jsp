@@ -10,15 +10,20 @@
 	</head>
 	<body>
 		<%@include file="includes/header.jsp" %>
-		<div class="generic">
+		<div class="generic-alert">
 				<div class="container">
 					<div class="row">
-						<div class="alert alert-danger mx-auto" role="alert">
-						  <h4 class="alert-heading">Errore! <i class="fa fa-frown-o" aria-hidden="true"></i></h4>
-						  <p>Qualcosa è andato storto, ti preghiamo di ritornare alla pagina iniziale</p>
-						  <hr>
-						  <a href="/" class="mb-0">Torna alla home</a>
+						<c:if test="${empty type}">
+							<c:set var="type" value="alert-danger"/>
+							<c:set var="title" value="Errore! "/>
+							<c:set var="message" value="Qualcosa è andato storto, ti preghiamo di tornare alla pagina iniziale"/>
+						</c:if>
+						<div class="alert ${type} mx-auto" role="alert"> <!--REF for alert typ: https://getbootstrap.com/docs/4.0/components/alerts/ -->
+						<h4 class="alert-heading">${title} <i class="fa fa-frown-o" aria-hidden="true"></i></h4>
+						<p>${message}</p>
 						</div>
+						<hr>
+						<a href="/" class="mb-0">Torna alla home</a>
 					</div>
 				</div>
 		</div>
