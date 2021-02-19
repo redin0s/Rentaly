@@ -1,14 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
-<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 <html>
 
 <head>
 	<%@include file="includes/import.jsp" %>
 	<title>Accedi - Rentaly</title>
-    <link rel="stylesheet" href="../../../css/Login-Register.css">
-    <sec:csrfMetaTags />
+    <link rel="stylesheet" href="../../css/Login-Register.css">
 </head>
 
 <body>
@@ -41,10 +39,14 @@
                 </c:when>
             </c:choose>
 
-          <p class="bottom">Non hai ancora un account? <a href="register">Registrati</a></p>
+            <div class="bottom">
+                <a href="forgot">Hai dimenticato la password?</a>
+                <p>Non hai ancora un account? <a href="register">Registrati</a></p>
+            </div>
         </form>
     </div> 
 
+    <%@include file="includes/footer.jsp" %>
 </body>
 
 </html>

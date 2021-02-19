@@ -1,5 +1,6 @@
 <ul class="list-group">
     <c:forEach items="${rents}" var="r">
+        <!--TODO if empty display something to say it's empty-->
         <div class="card list-group-item list-group-item-action justify-content-between align-items-center">
             <div class="card-body">
                 <div class="row">

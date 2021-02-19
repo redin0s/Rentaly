@@ -7,8 +7,6 @@ import javax.servlet.http.HttpSession;
 import com.folders.rentaly.service.token.TokenParser;
 import com.folders.rentaly.service.token.commands.TokenCommand;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,12 +14,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Controller
 @RequestMapping("/validate")
 public class TokenController {
     
-	private static final Logger log = LoggerFactory.getLogger(TestController.class);
-
     @Autowired
     private TokenParser tokenParser;
 

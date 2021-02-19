@@ -38,8 +38,12 @@ public class RentAddHolderTokenCommand extends TokenCommand {
         if (r.isPresent() && r.get().getHolder() == null) {
             //fallback to "token expired, sent mail to holder" & send mail to holder
             model.setViewName("error");
-            //TODO mail
-            model.addObject("error", "Questo link è scaduto, ma non sei ancora stato aggiunto a questo immobile come inquilino. Ti abbiamo inviato un nuovo link, controlla la tua casella di posta elettronica.");
+            model.addObject("type", "alert-danger");
+            model.addObject("title", "Errore!");
+            model.addObject("message", "Questo link è scaduto, ma non sei ancora stato aggiunto a questo immobile come inquilino. Ti abbiamo inviato un nuovo link, controlla la tua casella di posta elettronica.");
+        
+            //resend rent token
+            emailService.sendRentAddHolderEmail(r.get(), holderEmail);
         }
         else {
             super.executeExpired(model, session);

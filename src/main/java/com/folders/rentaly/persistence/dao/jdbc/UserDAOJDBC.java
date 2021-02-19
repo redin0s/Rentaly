@@ -9,14 +9,13 @@ import java.util.Optional;
 import com.folders.rentaly.persistence.dao.UserDAO;
 import com.folders.rentaly.model.User;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Component("userDAO")
 public class UserDAOJDBC extends JDBC implements UserDAO {
-
-    private static final Logger log = LoggerFactory.getLogger(RealtyDAOJDBC.class);
 
 	private User createUser(ResultSet rs) throws SQLException {
 		User user = new User();

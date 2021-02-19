@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 <html>
 
@@ -16,8 +17,9 @@
 
     <c:if test="${active eq false}">
         <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <sec:csrfInput />
             <strong>Il tuo account non è ancora stato confermato.</strong>
-            <p>Controlla la tua casella di posta elettronica, o in alternativa, <a>possiamo inviarti una nuova email.</a></p> <!-- TODO AJAX REQUEST FOR EMAIL -->
+            <p>Controlla la tua casella di posta elettronica, o in alternativa, <a href="#" id="confirm-email">possiamo inviarti una nuova email.</a></p> <!-- TODO AJAX REQUEST FOR EMAIL -->
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
         </button>
@@ -29,15 +31,14 @@
             <div class="sidebar-header">
                 <h6>Benvenuto, ${pageContext.request.userPrincipal.name}!</h6>
             </div>
-
             <ul class="list-unstyled components">
                 <li class="active">
-                    <a href="#">Il mio account</a>
+                    <a href="#" id="account">Il mio account</a>
                 </li>
                 <li>
                     <a href="#realtiesSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">I miei immobili</a>
                     <ul class="collapse list-unstyled" id="realtiesSubmenu">
-                        <li>
+                        <li class="inactive">
                             <c:choose>
                                 <c:when test="${active eq false}">
                                     <a data-toggle="modal" data-target="#realtyError">Nuovo Immobile</a>
@@ -52,7 +53,7 @@
                                             </div>
                                             <div class="modal-body">
                                                 <strong>Il tuo account non è ancora stato confermato.</strong>
-                                                <p>Controlla la tua casella di posta elettronica, o in alternativa, <a>possiamo inviarti una nuova email.</a></p>
+                                                <p>Controlla la tua casella di posta elettronica, o in alternativa, <a href="#" id="confirm-email">possiamo inviarti una nuova email.</a></p>
                                             </div>
                                           </div>
                                         </div>
@@ -63,39 +64,39 @@
                                 </c:otherwise>
                             </c:choose>
                         </li>
-                        <li>
-                            <a id="realties">Immobili</a>
+                        <li class="inactive">
+                            <a href="#" id="realties">Immobili</a>
                         </li>
-                        <li>
-                            <a id="drafts">Bozze</a>
+                        <li class="inactive">
+                            <a href="#" id="drafts">Bozze</a>
                         </li>
-                        <li>
-                            <a id="own-ongoing">Affitti in corso</a>
+                        <li class="inactive">
+                            <a href="#" id="own-ongoing">Affitti in corso</a>
                         </li>
-                        <li>
-                            <a id="own-ended">Affitti terminati</a>
+                        <li class="inactive">
+                            <a href="#" id="own-ended">Affitti terminati</a>
                         </li>
-                        <li>
-                            <a id="own-expenses">Spese</a>
+                        <li class="inactive">
+                            <a href="#" id="own-expenses">Spese</a>
                         </li>
                     </ul>
                 </li>
                 <li>
                     <a href="#rentsSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">I miei affitti</a>
                     <ul class="collapse list-unstyled" id="rentsSubmenu">
-                        <li>
-                            <a href="rents-ongoing">Affitti in corso</a>
+                        <li class="inactive">
+                            <a href="#" id="rents-ongoing">Affitti in corso</a>
                         </li>
-                        <li>
-                            <a href="rents-ended">Affitti terminati</a>
+                        <li class="inactive">
+                            <a href="#" id="rents-ended">Affitti terminati</a>
                         </li>
-                        <li>
-                            <a href="rents-expenses">Spese</a>
+                        <li class="inactive">
+                            <a href="#" id="rents-expenses">Spese</a>
                         </li>
                     </ul>
                 </li>
-                <li>
-                    <a href="#">Segnala un problema</a>
+                <li class="inactive">
+                    <a href="#" id="problem">Segnala un problema</a>
                 </li>
             </ul>
 
@@ -111,12 +112,13 @@
 
         
             
-        <div id="content">
+        <div id="content" style="background: linear-gradient(180deg, #dee2e6, #dee2e6);">
             <!-- Page Content -->
         </div>
     
     </div>       
 
+    <%@include file="includes/footer.jsp" %>
 </body>
 
 </html>

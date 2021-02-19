@@ -13,4 +13,6 @@ public interface RentDAO extends DAO<Rent> {
     List<Rent> findByRealty_OwnerAndEndGreaterThanEqual(User owner, LocalDate end);
     List<Rent> findByHolder(User holder);
     List<Rent> findByHolderAndEndGreaterThanEqual(User holder, LocalDate end);
+
+    Integer countByRealty_OwnerAndEndGreaterThanEqual(User owner, LocalDate end);
 }

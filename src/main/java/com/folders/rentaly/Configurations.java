@@ -3,6 +3,7 @@ package com.folders.rentaly;
 import com.folders.rentaly.service.CustomUserDetailService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -37,15 +38,20 @@ public class Configurations {
                 // http.cors().disable();
                 // http.csrf().disable();
 
+
                 http.authorizeRequests()
-                        .antMatchers("/", "/index", "/register", "/login", "/prova/*", "/validate",
+                        .antMatchers("/", "/index", "/register", "/login", "/forgot", "/prova/*", "/validate/*", "/css/**", "/js/**",
                                 "https://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css",
                                 "https://www.bing.com/fd/ls/*") // Here are the public paths
                             .permitAll()
-                        .antMatchers("/account", "/realty/*")
+                        .antMatchers("/account", "/account/*", "/realty/*")
                             .authenticated()
                         .antMatchers("/realty/*")
-                            .hasAuthority("USER");
+                            .hasAuthority("ACTIVE_USER")
+                        .antMatchers("/account/sendNewConfirmationEmail")
+                            .hasAuthority("INACTIVE_USER");
+                // http.addFilter(
+                //         .antMatchers("account/*")
 
                 http.formLogin()
                         .loginPage("/login") // set login page
@@ -57,6 +63,8 @@ public class Configurations {
                         .logout()
                             .logoutUrl("/logout")
                                 .permitAll();
+
+                http.authorizeRequests().anyRequest().denyAll();
             }
         };
     }
@@ -74,5 +82,13 @@ public class Configurations {
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean FilterRegistrationBean<GetFilter> ajaxFilter() {
+        FilterRegistrationBean<GetFilter> reg = new FilterRegistrationBean<>();
+        reg.setFilter(new GetFilter());
+        reg.addUrlPatterns("/account/*");
+
+        return reg;
     }
 }

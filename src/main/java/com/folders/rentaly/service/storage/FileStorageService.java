@@ -19,6 +19,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Component("fileStorangeService")
 public class FileStorageService implements StorageService {
 
@@ -43,7 +46,7 @@ public class FileStorageService implements StorageService {
 					SIZELIMIT
 			);
 		}
-		System.out.println(file.getContentType());
+		log.info(file.getContentType());
 		Path updir = Paths.get(DIRECTORY);
 		if (!Files.exists(updir)) {
 			Files.createDirectory(updir);

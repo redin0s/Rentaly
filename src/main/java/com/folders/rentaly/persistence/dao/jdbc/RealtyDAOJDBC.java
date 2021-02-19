@@ -14,14 +14,13 @@ import com.folders.rentaly.model.Insertion;
 import com.folders.rentaly.model.Realty;
 import com.folders.rentaly.model.User;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Component("realtyDAO")
 public class RealtyDAOJDBC extends JDBC implements RealtyDAO {
-
-    private static final Logger log = LoggerFactory.getLogger(RealtyDAOJDBC.class);
 
     private Realty createSafeRealty(ResultSet rs) throws SQLException {
         Realty realty = new Realty();
@@ -56,9 +55,10 @@ public class RealtyDAOJDBC extends JDBC implements RealtyDAO {
         List<Realty> ls = new ArrayList<Realty>();
 		try {
 			Connection con = dbSource.getConnection();
-			String query = "SELECT * FROM prova.realty WHERE owner_id = ?";
+			String query = "SELECT * FROM prova.realty LEFT JOIN prova.insertion ON realty.insertion_id = insertion.id WHERE owner_id = ?";
 			PreparedStatement st = con.prepareStatement(query);
 			st.setInt(1, owner.getId());
+            log.info(st.toString());
             ResultSet rs = st.executeQuery();
 			while (rs.next()) {
                 Realty realty = createSafeRealty(rs);
@@ -127,7 +127,7 @@ public class RealtyDAOJDBC extends JDBC implements RealtyDAO {
 		List<Realty> ls = new ArrayList<Realty>();
 		try {
 			Connection con = dbSource.getConnection();
-			String query = "SELECT * FROM prova.realty WHERE owner_id = ? AND is_draft = ?";
+			String query = "SELECT * FROM prova.realty LEFT JOIN prova.insertion ON realty.insertion_id = insertion.id WHERE owner_id = ? AND is_draft = ?";
 			PreparedStatement st = con.prepareStatement(query);
 			st.setInt(1, owner.getId());
 			st.setBoolean(2, draft);
@@ -144,7 +144,7 @@ public class RealtyDAOJDBC extends JDBC implements RealtyDAO {
 		return ls;
 	}
 
-     @Override
+    @Override
     public List<Realty> findClosestToPoint(Float lat, Float lon) {
         List<Realty> ls = new ArrayList<Realty>();
         try {
@@ -168,7 +168,6 @@ public class RealtyDAOJDBC extends JDBC implements RealtyDAO {
             } else {
                 do {
                     Realty realty = createSafeRealty(rs);
-                    // realty.setOwner(owner);
                     ls.add(realty);
                     log.info(realty.toString());
                 } while (rs.next());
@@ -248,5 +247,23 @@ public class RealtyDAOJDBC extends JDBC implements RealtyDAO {
 
     }
 
-   
+    @Override
+    public Integer countByOwnerAndDraft(User owner, Boolean draft) {
+        Integer count = 0;
+		try {
+			Connection con = dbSource.getConnection();
+			String query = "SELECT COUNT(*) FROM prova.realty WHERE owner_id = ? AND is_draft = ?";
+			PreparedStatement st = con.prepareStatement(query);
+			st.setInt(1, owner.getId());
+			st.setBoolean(2, draft);
+			ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+		} catch (SQLException e) {
+			log.info(e.getMessage());
+			log.trace(e.getStackTrace().toString());
+		}
+		return count;
+    }
 }

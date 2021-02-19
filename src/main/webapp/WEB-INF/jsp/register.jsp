@@ -1,15 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
-<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 <html>
 
 <head>
 	<%@include file="includes/import.jsp" %>
 	<title>Registrati - Rentaly</title>
-    <link rel="stylesheet" href="../../../css/Login-Register.css">
-    <sec:csrfMetaTags />
+    <link rel="stylesheet" href="../../css/Login-Register.css">
 </head>
 
 <body>
@@ -50,6 +48,7 @@
         </form>
     </div> 
 
+    <%@include file="includes/footer.jsp" %>
 </body>
 
 </html>

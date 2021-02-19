@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
 <ul class="list-group">
+    <!--TODO if empty display something to say it's empty, <a>new realty</a>-->
     <c:forEach items="${realties}" var="r">
         <div class="card list-group-item list-group-item-action justify-content-between align-items-center">
             <div class="card-body">

@@ -11,21 +11,21 @@ import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.folders.rentaly.persistence.dao.UserDAO;
+import com.folders.rentaly.service.token.commands.ChangeEmailTokenCommand;
 import com.folders.rentaly.service.token.commands.ForgotPasswordTokenCommand;
 import com.folders.rentaly.service.token.commands.RegistrationTokenCommand;
 import com.folders.rentaly.service.token.commands.RentAddHolderTokenCommand;
 import com.folders.rentaly.service.token.commands.TokenCommand;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class TokenParser {
-
-    private static final Logger log = LoggerFactory.getLogger(TokenParser.class);
 
     private Algorithm algorithm;
     private JWTVerifier verifier;
@@ -68,6 +68,10 @@ public class TokenParser {
 
                 case "holder":
                     command = Optional.of(new RentAddHolderTokenCommand(expired, dec.getClaim("holder").asString(), dec.getClaim("realty").asInt()));
+                    break;
+
+                case "changeEmail":
+                    command = Optional.of(new ChangeEmailTokenCommand(expired, dec.getClaim("user").asString(), dec.getClaim("newEmail").asString(), userDAO));
                     break;
 
                 default:

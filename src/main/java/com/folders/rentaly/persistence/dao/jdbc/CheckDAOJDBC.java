@@ -13,14 +13,13 @@ import com.folders.rentaly.persistence.dao.CheckDAO;
 import com.folders.rentaly.model.Check;
 import com.folders.rentaly.model.User;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Component("checkDAO")
 public class CheckDAOJDBC extends JDBC implements CheckDAO {
-
-    private static final Logger log = LoggerFactory.getLogger(CheckDAOJDBC.class);
 
     private Check createSafeCheck(ResultSet rs) throws SQLException {
         Check check = new Check();
@@ -82,5 +81,45 @@ public class CheckDAOJDBC extends JDBC implements CheckDAO {
         }
 
         return check;
+    }
+
+    @Override
+    public Integer countByOwnerAndExpireGreaterThanEqual(User owner, LocalDate date) {
+        Integer count = 0;
+        try {
+            Connection con = dbSource.getConnection();
+            String query = "SELECT COUNT(*) FROM prova.check JOIN prova.rent ON check.rent_id = rent.id  JOIN prova.realty ON rent.realty_id = realty.id WHERE owner_id=? AND expire >= ?";
+            PreparedStatement st = con.prepareStatement(query);
+            st.setInt(1, owner.getId());
+            st.setObject(2, date);
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            log.info(e.getMessage());
+            log.trace(e.getStackTrace().toString());
+        }
+        return count;
+    }
+
+    @Override
+    public Integer countByHolderAndExpireGreaterThanEqual(User holder, LocalDate date) {
+        Integer count = 0;
+        try {
+            Connection con = dbSource.getConnection();
+            String query = "SELECT COUNT(*) FROM prova.check JOIN prova.rent ON check.rent_id = rent.id WHERE holder_id=? and expire >= ?";
+            PreparedStatement st = con.prepareStatement(query);
+            st.setInt(1, holder.getId());
+            st.setObject(2, date);
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            log.info(e.getMessage());
+            log.trace(e.getStackTrace().toString());
+        }
+        return count;
     }
 }

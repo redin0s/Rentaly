@@ -47,7 +47,7 @@
   outline: none;
 }
 
-.login-register form .btn-primary:hover, .login-register form .btn-primary:active {
+.login-register form .btn-primary:hover, .login-register form .btn-primary:active, .login-register form .btn-primary:focus {
   background: #155724;
   outline: none;
 }

@@ -17,8 +17,6 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.interfaces.DecodedJWT;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,10 +26,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Controller
 @RequestMapping("/prova")
 public class TestController {
-	private static final Logger log = LoggerFactory.getLogger(TestController.class);
 
 	@Autowired
 	private UserDAO userDAO;
@@ -85,7 +85,7 @@ public class TestController {
 
 	@GetMapping("/mail")
 	public String sendmail() {
-		emailService.sendMail("mmuraca247@gmail.com", "Test", "ido");
+		emailService.sendEmail("mmuraca247@gmail.com", "Test", "ido");
 		return "myRealties";
 	}
 

@@ -9,7 +9,6 @@ $(document).ready(
         });
 
         function ajaxRegisterPost() {
-            // var csrfParameter = $("meta[name='_csrf_parameter']").attr("content");
 			var csrfHeader = $("meta[name='_csrf_header']").attr("content");
             var csrfToken = $("meta[name='_csrf']").attr("content");
             var headers = {};
@@ -19,8 +18,6 @@ $(document).ready(
 			var userData = {
 				email : $("#email").val(),
                 password : $("#password").val()
-                // email: document.getElementById("email").value(),
-                // password: document.getElementById("password").value()
 			}
         
         	// DO POST
@@ -30,7 +27,6 @@ $(document).ready(
 				url : "register",
                 data : JSON.stringify(userData),
                 headers: headers,
-				// dataType : 'json',
 				success : function (data, status, xhr) {
 					if (data == "success") {
                         console.log("User " + userData.email + " successfully registered.");
@@ -44,16 +40,16 @@ $(document).ready(
                     var msg;
                     switch (data) {
                         case "invalidemail":
-                            msg = "Insert a valid email.";
+                            msg = "Inserisci una email valida.";
                             break;
                         case "missingpassword":
-                            msg = "Insert a password.";
+                            msg = "Inserisci una password.";
                             break;
                         case "existing":
-                            msg = "This account already exists.";
+                            msg = "Account già esistente.";
                             break;
                         default:
-                            msg = "Server error. Please try again.";
+                            msg = "Errore interno, riprova tra poco.";
                             break;
                     }
                     $("#errorMessage").html(msg);

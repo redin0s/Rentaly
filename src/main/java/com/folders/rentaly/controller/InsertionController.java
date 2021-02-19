@@ -7,18 +7,17 @@ import javax.servlet.http.HttpSession;
 import com.folders.rentaly.model.Insertion;
 import com.folders.rentaly.persistence.dao.InsertionDAO;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.ModelAndView;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Controller
 public class InsertionController {
-
-    private static final Logger log = LoggerFactory.getLogger(AccountController.class);
     
     @Autowired
 	private InsertionDAO insertionDAO;

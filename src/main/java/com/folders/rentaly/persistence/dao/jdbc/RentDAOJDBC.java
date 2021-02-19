@@ -16,14 +16,13 @@ import com.folders.rentaly.model.Realty;
 import com.folders.rentaly.model.Rent;
 import com.folders.rentaly.model.User;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Component("rentDAO")
 public class RentDAOJDBC extends JDBC implements RentDAO {
-
-	private static final Logger log = LoggerFactory.getLogger(RentDAOJDBC.class);
 
 	private User createHolder(ResultSet rs) throws SQLException {
 		User holder = new User();
@@ -91,7 +90,8 @@ public class RentDAOJDBC extends JDBC implements RentDAO {
 		List<Rent> ls = new ArrayList<>();
 		try {
 			Connection con = dbSource.getConnection();
-			String query = "SELECT * FROM prova.rent as rent WHERE (SELECT owner_id FROM prova.realty as realty WHERE realty.id = rent.id) = ? AND end >= ?";
+			// String query = "SELECT * FROM prova.rent as rent WHERE (SELECT owner_id FROM prova.realty as realty WHERE realty.id = rent.id) = ? AND end >= ?";
+			String query = "SELECT * FROM prova.rent JOIN prova.realty ON rent.realty_id = realty.id WHERE owner_id = ? AND end_date >= ?";
 			PreparedStatement st = con.prepareStatement(query);
 			st.setInt(1, owner.getId());
 			st.setObject(2, end);
@@ -140,7 +140,7 @@ public class RentDAOJDBC extends JDBC implements RentDAO {
 		List<Rent> ls = new ArrayList<>();
 		try {
 			Connection con = dbSource.getConnection();
-			String query = "SELECT * FROM prova.rent WHERE holder_id = ? AND end >= ?";
+			String query = "SELECT * FROM prova.rent WHERE holder_id = ? AND end_date >= ?";
 			PreparedStatement st = con.prepareStatement(query);
 			st.setInt(1, holder.getId());
 			st.setObject(2, end);
@@ -217,6 +217,25 @@ public class RentDAOJDBC extends JDBC implements RentDAO {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public Integer countByRealty_OwnerAndEndGreaterThanEqual(User owner, LocalDate end) {
+		Integer count = 0;
+		try {
+			Connection con = dbSource.getConnection();
+			String query = "SELECT COUNT(*) FROM prova.rent JOIN prova.realty ON rent.realty_id = realty.id WHERE owner_id = ? AND end_date >= ?";
+			PreparedStatement st = con.prepareStatement(query);
+			st.setInt(1, owner.getId());
+			st.setObject(2, end);
+			ResultSet rs = st.executeQuery();
+			if (rs.next()) {
+				count = rs.getInt(1);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return count;
 	}
 
 }

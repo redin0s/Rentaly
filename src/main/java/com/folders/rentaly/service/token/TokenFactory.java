@@ -28,6 +28,9 @@ public class TokenFactory {
     @Value("${token.rent_add_holder.expiration}")
     private Long rentExpiration;
 
+    @Value("${token.change_email.expiration}")
+    private Long changeEmailExpiration;
+
     public String makeConfirmRegistrationToken(User userToConfirm) {
 
         return  JWT.create()
@@ -39,7 +42,6 @@ public class TokenFactory {
     }
 
     public String makeForgotPasswordToken(User userWhoForgot) {
-
         return  JWT.create()
                     .withSubject("rentaly")
                     .withClaim("type", "password")
@@ -57,6 +59,16 @@ public class TokenFactory {
                     .withClaim("user", email)
                     .withClaim("rent", rent.getId())
                     .withExpiresAt(Date.from(Instant.now().plus(rentExpiration,ChronoUnit.HOURS)))
+                    .sign(tokenParser.getAlgorithm());
+    }
+
+    public String makeChangeEmailToken(User user, String newEmail) {
+        return  JWT.create()
+                    .withSubject("rentaly")
+                    .withClaim("type", "changeEmail")
+                    .withClaim("user", user.getEmail())
+                    .withClaim("newEmail", newEmail)
+                    .withExpiresAt(Date.from(Instant.now().plus(changeEmailExpiration,ChronoUnit.HOURS)))
                     .sign(tokenParser.getAlgorithm());
     }
 }
