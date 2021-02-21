@@ -22,7 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Component("fileStorangeService")
+@Component("storageService")
 public class FileStorageService implements StorageService {
 
 	@Value("${storage.file.sizelimit}")

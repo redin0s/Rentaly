@@ -3,16 +3,17 @@ package com.folders.rentaly.controller;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.http.HttpSession;
 
 import com.folders.rentaly.model.Realty;
 import com.folders.rentaly.model.Rent;
 import com.folders.rentaly.model.User;
+import com.folders.rentaly.model.Check;
 import com.folders.rentaly.persistence.dao.CheckDAO;
 import com.folders.rentaly.persistence.dao.RealtyDAO;
 import com.folders.rentaly.persistence.dao.RentDAO;
-import com.folders.rentaly.persistence.dao.UserDAO;
 import com.folders.rentaly.service.CustomUserDetailService;
 import com.folders.rentaly.service.RentalyEmailService;
 
@@ -42,9 +43,6 @@ public class AccountController {
 
     @Autowired
     private RentDAO rentDAO;
-
-    @Autowired
-    private UserDAO userDAO;
 
     @Autowired
     private CheckDAO checkDAO;
@@ -93,9 +91,41 @@ public class AccountController {
     } 
 
     @RequestMapping(value="/realties-checks", method=RequestMethod.GET)
-    public ModelAndView doGetRealtiesChecks(ModelAndView model, HttpSession session) {
+    public ModelAndView doGetRealtiesChecks(ModelAndView model, HttpSession session, @RequestParam Boolean isPaid) {
         model.setViewName("checksList");
-        model.addObject("checks", checkDAO.findByRent_Realty_Owner(customUserDetailService.getUser(session).get()));
+        model.addObject("checks", checkDAO.findByRent_Realty_OwnerAndPaid(customUserDetailService.getUser(session).get(), isPaid));
+        model.addObject("isPaid", isPaid);
+        model.addObject("owner", true);
+        return model;
+    } 
+
+    @RequestMapping(value="/rents", method=RequestMethod.GET)
+    public ModelAndView doGetRents(ModelAndView model, HttpSession session, @RequestParam Boolean isEnded) {
+        model.setViewName("rentsList");
+
+        List<Rent> ongoingRents = rentDAO.findByHolderAndEndGreaterThanEqual(customUserDetailService.getUser(session).get(), LocalDate.now());
+        if (isEnded) {
+            List<Rent> rents = rentDAO.findByHolder(customUserDetailService.getUser(session).get());
+
+            for(Rent r: ongoingRents) {
+                rents.remove(r);
+            }
+
+            model.addObject("rents", rents);
+        }
+        else {
+            model.addObject("rents", ongoingRents);
+        }
+
+        return model;
+    } 
+
+    @RequestMapping(value="/rents-checks", method=RequestMethod.GET)
+    public ModelAndView doGetRentsChecks(ModelAndView model, HttpSession session, @RequestParam Boolean isPaid) {
+        model.setViewName("checksList");
+        model.addObject("checks", checkDAO.findByRent_HolderAndPaid(customUserDetailService.getUser(session).get(), isPaid));
+        model.addObject("isPaid", isPaid);
+        model.addObject("owner", false);
         return model;
     } 
 
@@ -104,17 +134,23 @@ public class AccountController {
     public ResponseEntity<String> doAddHolder(HttpSession session, @RequestBody JSONObject content) {
         log.info(content.toString());
         try {
-            User holder = userDAO.findUser(content.getAsString("user_email")).get();
-            Realty realty = realtyDAO.get(Integer.valueOf(content.getAsNumber("realty_id").intValue())).get();
+            String holderEmail = content.getAsString("user_email");
+            Integer duration = Integer.parseInt(content.getAsString("duration"));
+            //TODO Validate input
+            Integer realty_id = Integer.parseInt(content.getAsString("realty_id"));
+            Integer cost = Integer.parseInt(content.getAsString("cost"));
+            if (duration <= 0 || realty_id <= 0 || cost <= 0)
+                throw new IllegalArgumentException(String.format("One of these is not > 0 | duration = %d | realty_id = %d | cost = %d", duration,realty_id,cost));
+            Realty realty = realtyDAO.get(realty_id).get();
             Rent rent = new Rent();
             rent.setRealty(realty);
-            rent.setHolder(holder);
-            rent.setCost(content.getAsNumber("cost").intValue());
+            rent.setCost(cost);
             rent.setStart(LocalDate.parse(content.getAsString("start"),DateTimeFormatter.ofPattern("dd/MM/yyyy")));
             LocalDate end = rent.getStart();
-            end = end.plusMonths(content.getAsNumber("duration").intValue());
+            end = end.plusMonths(duration);
             rent.setEnd(end);
             rentDAO.save(rent);
+            emailService.sendRentAddHolderEmail(rent, holderEmail);
             return new ResponseEntity<String>("success", HttpStatus.OK);
 
         } catch (Exception e) {
@@ -143,7 +179,6 @@ public class AccountController {
         model.addObject("checksToPayCount", checksToPayCount);
 
         model.setViewName("account");
-        
         return model;
     }
 
@@ -185,6 +220,50 @@ public class AccountController {
         String newPassword = content.getAsString("newPassword");
         if (oldPassword != null && newPassword != null && customUserDetailService.changePassword(session, oldPassword, newPassword))
             return new ResponseEntity<String>("success", HttpStatus.OK);
+        return new ResponseEntity<String>("error", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @PostMapping(value = "/createCheck", consumes ={"application/json"})
+    @ResponseBody
+    public ResponseEntity<String> doCreateCheck(HttpSession session, @RequestBody JSONObject content) {
+        try {
+            Check c = new Check();
+            c.setCheck_type(content.getAsString("check_type"));
+            c.setCost(Float.parseFloat(content.getAsString("check_cost")));
+            c.setExpire(LocalDate.parse(content.getAsString("expire"),DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+            c.setRent(rentDAO.get(Integer.parseInt(content.getAsString("rent"))).get());
+            c.setPaid(content.getAsString("paid").equals("Si"));
+            
+            checkDAO.save(c);
+            return new ResponseEntity<String>("success", HttpStatus.OK);
+        }
+        catch (Exception e) {
+            log.info(e.getMessage());
+        }
+
+        return new ResponseEntity<String>("error", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @PostMapping(value = "/payCheck", consumes ={"application/json"})
+    @ResponseBody
+	public ResponseEntity<String> payCheck(HttpSession session, @RequestBody JSONObject content) {
+        Integer id = Integer.parseInt(content.getAsString("selected"));
+		try {
+            Optional<Check> toPay = checkDAO.get(id);
+            Optional<User> user = customUserDetailService.getUser(session);
+            if (toPay.isPresent()
+                &&
+                (toPay.get().getRent().getHolder().getId() == user.get().getId()
+                ||
+                toPay.get().getRent().getRealty().getOwner().getId() == user.get().getId())) {
+                toPay.get().setPaid(true);
+                checkDAO.save(toPay.get());
+                return new ResponseEntity<String>("success", HttpStatus.OK);
+            }
+
+        } catch (Exception e) {
+            log.info(e.getMessage());
+        }
         return new ResponseEntity<String>("error", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 

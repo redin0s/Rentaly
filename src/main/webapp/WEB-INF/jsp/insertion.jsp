@@ -17,7 +17,7 @@
 					<h1>${insertion.realty.display_name}</h1>
 				</div>
 				<div class="col-md-2">
-					<h1>Cost: ${insertion.cost} EUR</h1>
+					<h1>Costo: ${insertion.cost} €</h1>
 				</div>
 				<div class="col-md-3"></div>
 			</div>
@@ -55,10 +55,10 @@
 
 			<div class="row">
 				<div class="col-md-4">
-					<p>Square Meters: ${insertion.realty.square_meters}</p>
+					<p>Metri quadri: ${insertion.realty.square_meters}</p>
 				</div>
 				<div class="col-md-4">
-					<p>Max Holders: ${insertion.realty.max_holders}</p>
+					<p>Massimo numero di affittuari: ${insertion.realty.max_holders}</p>
 				</div>
 				<div class="col-md-4">
 					<p>Proprietario: ${insertion.realty.owner.email}</p>

@@ -1,21 +1,23 @@
 package com.folders.rentaly.persistence.dao.jdbc;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.folders.rentaly.persistence.dao.RealtyDAO;
 import com.folders.rentaly.persistence.dao.RentDAO;
-
+import com.folders.rentaly.persistence.dao.UserDAO;
 import com.folders.rentaly.model.Realty;
 import com.folders.rentaly.model.Rent;
 import com.folders.rentaly.model.User;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
@@ -24,12 +26,14 @@ import lombok.extern.slf4j.Slf4j;
 @Component("rentDAO")
 public class RentDAOJDBC extends JDBC implements RentDAO {
 
-	private User createHolder(ResultSet rs) throws SQLException {
-		User holder = new User();
-		holder.setId(rs.getInt("holder_id"));
-		holder.setEmail(rs.getString("email"));
-		holder.setPassword(rs.getString("password"));
-		return holder;
+	@Autowired
+	private UserDAO userDAO;
+
+	@Autowired
+	private RealtyDAO realtyDAO;
+
+	public RentDAOJDBC() {
+		super("rent");
 	}
 
 	private Rent createSafeRent(ResultSet rs) throws SQLException {
@@ -38,22 +42,21 @@ public class RentDAOJDBC extends JDBC implements RentDAO {
 		rent.setCost(rs.getInt("cost"));
 		rent.setStart(rs.getObject("start_date", LocalDate.class));
 		rent.setEnd(rs.getObject("end_date", LocalDate.class));
+		rent.setHolder(userDAO.get(rs.getInt("holder_id")).get());
+		rent.setRealty(realtyDAO.get(rs.getInt("realty_id")).get());
 		return rent;
 	}
 
 	@Override
 	public List<Rent> findByRealty(Realty realty) {
 		List<Rent> ls = new ArrayList<Rent>();
-		try {
-			Connection con = dbSource.getConnection();
-			String query = "SELECT * FROM prova.rent WHERE realty_id = ? JOIN prova.user ON holder_id = id";
-			PreparedStatement st = con.prepareStatement(query);
+		String query = "SELECT * FROM rent JOIN user ON rent.holder_id = user.id WHERE rent.realty_id = ?";
+		try (Connection con = dbSource.getConnection(); PreparedStatement st = con.prepareStatement(query);) {
 			st.setInt(1, realty.getId());
 			ResultSet rs = st.executeQuery();
 			while (rs.next()) {
 				Rent rent = createSafeRent(rs);
 				rent.setRealty(realty);
-				rent.setHolder(createHolder(rs));
 				ls.add(rent);
 			}
 		} catch (SQLException e) {
@@ -67,13 +70,10 @@ public class RentDAOJDBC extends JDBC implements RentDAO {
 	@Override
 	public List<Rent> findByRealty_Owner(User owner) {
 		List<Rent> ls = new ArrayList<>();
-		try {
-			Connection con = dbSource.getConnection();
-			String query = "SELECT * FROM prova.rent as rent WHERE (SELECT owner_id FROM prova.realty as realty WHERE realty.id = rent.id) = ?";
-			PreparedStatement st = con.prepareStatement(query);
+		String query = "SELECT * FROM rent as rent WHERE (SELECT owner_id FROM realty as realty WHERE realty.id = rent.id) = ?";
+		try (Connection con = dbSource.getConnection(); PreparedStatement st = con.prepareStatement(query);) {
 			st.setInt(1, owner.getId());
 			ResultSet rs = st.executeQuery();
-
 			while (rs.next()) {
 				Rent rent = createSafeRent(rs);
 
@@ -88,11 +88,8 @@ public class RentDAOJDBC extends JDBC implements RentDAO {
 	@Override
 	public List<Rent> findByRealty_OwnerAndEndGreaterThanEqual(User owner, LocalDate end) {
 		List<Rent> ls = new ArrayList<>();
-		try {
-			Connection con = dbSource.getConnection();
-			// String query = "SELECT * FROM prova.rent as rent WHERE (SELECT owner_id FROM prova.realty as realty WHERE realty.id = rent.id) = ? AND end >= ?";
-			String query = "SELECT * FROM prova.rent JOIN prova.realty ON rent.realty_id = realty.id WHERE owner_id = ? AND end_date >= ?";
-			PreparedStatement st = con.prepareStatement(query);
+		String query = "SELECT * FROM rent JOIN realty ON rent.realty_id = realty.id WHERE owner_id = ? AND end_date >= ?";
+		try (Connection con = dbSource.getConnection(); PreparedStatement st = con.prepareStatement(query);) {
 			st.setInt(1, owner.getId());
 			st.setObject(2, end);
 			ResultSet rs = st.executeQuery();
@@ -113,13 +110,10 @@ public class RentDAOJDBC extends JDBC implements RentDAO {
 	@Override
 	public List<Rent> findByHolder(User holder) {
 		List<Rent> ls = new ArrayList<>();
-		try {
-			Connection con = dbSource.getConnection();
-			String query = "SELECT * FROM prova.rent WHERE holder_id = ?";
-			PreparedStatement st = con.prepareStatement(query);
+		String query = "SELECT * FROM rent WHERE holder_id = ?";
+		try (Connection con = dbSource.getConnection(); PreparedStatement st = con.prepareStatement(query);) {
 			st.setInt(1, holder.getId());
 			ResultSet rs = st.executeQuery();
-
 			while (rs.next()) {
 				Rent rent = createSafeRent(rs);
 				Realty r = new Realty();
@@ -138,10 +132,8 @@ public class RentDAOJDBC extends JDBC implements RentDAO {
 	@Override
 	public List<Rent> findByHolderAndEndGreaterThanEqual(User holder, LocalDate end) {
 		List<Rent> ls = new ArrayList<>();
-		try {
-			Connection con = dbSource.getConnection();
-			String query = "SELECT * FROM prova.rent WHERE holder_id = ? AND end_date >= ?";
-			PreparedStatement st = con.prepareStatement(query);
+		String query = "SELECT * FROM rent WHERE holder_id = ? AND end_date >= ?";
+		try (Connection con = dbSource.getConnection(); PreparedStatement st = con.prepareStatement(query);) {
 			st.setInt(1, holder.getId());
 			st.setObject(2, end);
 			ResultSet rs = st.executeQuery();
@@ -164,10 +156,8 @@ public class RentDAOJDBC extends JDBC implements RentDAO {
 	@Override
 	public Optional<Rent> get(Integer id) {
 		Optional<Rent> rent = Optional.empty();
-		try {
-			Connection con = dbSource.getConnection();
-			String query = "SELECT * FROM prova.rent WHERE id ?";
-			PreparedStatement st = con.prepareStatement(query);
+		String query = "SELECT * FROM rent WHERE id=?";
+		try (Connection con = dbSource.getConnection(); PreparedStatement st = con.prepareStatement(query);) {
 			st.setInt(1, id);
 			ResultSet rs = st.executeQuery();
 			while (rs.next()) {
@@ -181,24 +171,26 @@ public class RentDAOJDBC extends JDBC implements RentDAO {
 
 	@Override
 	public void save(Rent t) {
-		try {
-			Connection con = dbSource.getConnection();
-			PreparedStatement st;
-			String query;
-			if (t.getId() != null) {
-				query = "UPDATE prova.rent SET cost=?, realty_id=?, start_date=?, end_date=?, holder_id=?, active=? WHERE id = ?";
-				st = con.prepareStatement(query);
-				st.setInt(7, t.getId());
-			} else {
-				query = "INSERT INTO prova.rent VALUES(?, ?, ?, ?, ?, ?)";
-				st = con.prepareStatement(query);
+		String query = "INSERT INTO rent (cost, realty_id, start_date, end_date, holder_id, active, id) VALUES(?, ?, ?, ?, ?, ?, ?) ON CONFLICT (id) DO UPDATE SET "+
+						"cost=EXCLUDED.cost, realty_id=EXCLUDED.realty_id, start_date=EXCLUDED.start_date, end_date=EXCLUDED.end_date, holder_id=EXCLUDED.holder_id, "+
+						"active=EXCLUDED.active";	
+		try (Connection con = dbSource.getConnection(); PreparedStatement st = con.prepareStatement(query);) {
+			if (t.getId() == null) {
+				t.setId(getNextId());
+				t.setActive(false);
+			}
+			if(t.getHolder() == null) {
+				st.setNull(5, Types.INTEGER);
+			}
+			else {
+				st.setInt(5, t.getHolder().getId());
 			}
 			st.setInt(1, t.getCost());
 			st.setInt(2, t.getRealty().getId());
-			st.setDate(3, Date.valueOf(t.getStart()));
-			st.setDate(4, Date.valueOf(t.getEnd()));
-			st.setInt(5, t.getHolder().getId());
+			st.setObject(3, t.getStart());
+			st.setObject(4, t.getEnd());
 			st.setBoolean(6, t.getActive());
+			st.setInt(7, t.getId());
 			st.executeUpdate();
 
 		} catch (SQLException e) {
@@ -208,10 +200,8 @@ public class RentDAOJDBC extends JDBC implements RentDAO {
 
 	@Override
 	public void delete(Rent t) {
-		try {
-			Connection con = dbSource.getConnection();
-			String query = "DELETE FROM prova.rent WHERE id = ?";
-			PreparedStatement st = con.prepareStatement(query);
+		String query = "DELETE FROM rent WHERE id = ?";
+		try (Connection con = dbSource.getConnection(); PreparedStatement st = con.prepareStatement(query);) {
 			st.setInt(1, t.getId());
 			st.executeUpdate();
 		} catch (SQLException e) {
@@ -222,10 +212,8 @@ public class RentDAOJDBC extends JDBC implements RentDAO {
 	@Override
 	public Integer countByRealty_OwnerAndEndGreaterThanEqual(User owner, LocalDate end) {
 		Integer count = 0;
-		try {
-			Connection con = dbSource.getConnection();
-			String query = "SELECT COUNT(*) FROM prova.rent JOIN prova.realty ON rent.realty_id = realty.id WHERE owner_id = ? AND end_date >= ?";
-			PreparedStatement st = con.prepareStatement(query);
+		String query = "SELECT COUNT(*) FROM rent JOIN realty ON rent.realty_id = realty.id WHERE owner_id = ? AND end_date >= ?";
+		try (Connection con = dbSource.getConnection(); PreparedStatement st = con.prepareStatement(query);) {
 			st.setInt(1, owner.getId());
 			st.setObject(2, end);
 			ResultSet rs = st.executeQuery();

@@ -17,6 +17,10 @@ import lombok.extern.slf4j.Slf4j;
 @Component("userDAO")
 public class UserDAOJDBC extends JDBC implements UserDAO {
 
+	public UserDAOJDBC() {
+		super("rentaly.user");
+	}
+
 	private User createUser(ResultSet rs) throws SQLException {
 		User user = new User();
 		user.setId(rs.getInt("id"));
@@ -29,10 +33,8 @@ public class UserDAOJDBC extends JDBC implements UserDAO {
 	@Override
 	public Optional<User> findUser(String email) {
 		Optional<User> useropt = Optional.empty();
-		try {
-			Connection con = dbSource.getConnection();
-			String query = "SELECT * FROM prova.user WHERE email = ?";
-			PreparedStatement st = con.prepareStatement(query);
+		String query = "SELECT * FROM rentaly.user WHERE email = ?";
+		try (Connection con = dbSource.getConnection(); PreparedStatement st = con.prepareStatement(query);) {		
 			st.setString(1, email);
 			ResultSet rs = st.executeQuery();
 			if (rs.next()) {
@@ -47,50 +49,29 @@ public class UserDAOJDBC extends JDBC implements UserDAO {
 
 	@Override
 	public void save(User user) {
-		Connection con = null;
-		PreparedStatement st = null;
-		try {
-			String query;
-			con = dbSource.getConnection();
+		String query = "INSERT INTO rentaly.user (email,password,active,id) VALUES (?,?,?,?)" +
+		               "ON CONFLICT (id) DO UPDATE SET email=EXCLUDED.email, password=EXCLUDED.password, active=EXCLUDED.active";
+		try (Connection con = dbSource.getConnection(); PreparedStatement st = con.prepareStatement(query);) {		
 			if (user.getId() == null) {
-				query = "INSERT INTO prova.user (email,password,active) VALUES (?,?,?)";
-				st = con.prepareStatement(query);
-				st.setBoolean(3, false);
-			}
-			else {
-				query = "UPDATE prova.user SET email=?, password=?, active=?  WHERE id = ?";
-				st = con.prepareStatement(query);
-				st.setBoolean(3, user.getActive());
-				st.setInt(4, user.getId());
+				user.setActive(false);
+				user.setId(getNextId());
 			}
 			st.setString(1, user.getEmail());
 			st.setString(2, user.getPassword());
+			st.setBoolean(3, user.getActive());
+			st.setInt(4, user.getId());
+
 			st.executeUpdate();
 		} catch (SQLException e) {
 			log.error("error in insert/update user", e);
-		} finally {
-			try {
-				if (con != null) {
-					con.close();
-				}
-				if (st != null) {
-					st.close();
-				}
-			}
-			catch (SQLException e) {
-				log.error(e.getMessage());
-			}
 		}
 	}
 
 	@Override
 	public Optional<User> get(Integer id) {
-		
 		Optional<User> useropt = Optional.empty();
-		try {
-			Connection con = dbSource.getConnection();
-			String query = "SELECT * FROM prova.user WHERE id = ?";
-			PreparedStatement st = con.prepareStatement(query);
+		String query = "SELECT * FROM rentaly.user WHERE id = ?";
+		try (Connection con = dbSource.getConnection(); PreparedStatement st = con.prepareStatement(query);) {		
 			st.setInt(1, id);
 			ResultSet rs = st.executeQuery();
 			if (rs.next()) {
@@ -105,10 +86,8 @@ public class UserDAOJDBC extends JDBC implements UserDAO {
 
 	@Override
 	public void delete(User t) {
-		try {
-			Connection con = dbSource.getConnection();
-			String query = "DELETE FROM prova.user WHERE id = ?";
-			PreparedStatement st = con.prepareStatement(query);
+		String query = "DELETE FROM rentaly.user WHERE id = ?";
+		try (Connection con = dbSource.getConnection(); PreparedStatement st = con.prepareStatement(query);) {		
 			st.setInt(1, t.getId());
 			st.executeUpdate();
 		} catch (SQLException e) {

@@ -10,6 +10,10 @@ import org.springframework.stereotype.Component;
 @Component("savedSearchDAO")
 public class SavedSearchDAOJDBC extends JDBC implements SavedSearchDAO {
 
+    public SavedSearchDAOJDBC() {
+        super("savedsearch");
+    }
+
     @Override
     public Optional<SavedSearch> get(Integer id) {
         // TODO Auto-generated method stub

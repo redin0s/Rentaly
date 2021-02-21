@@ -30,18 +30,18 @@ public class GetFilter implements Filter {
             Optional<String> ajax = Optional.ofNullable(req.getHeader("AJAX"));
             if(ajax.isPresent() && ajax.get().equals("true") || req.getRequestURI().equals("/account")) {
                 // log.info(ajax.get() + " 30");
-                log.info("come in you GETTER");
+                // log.info("come in you GETTER");
                 chain.doFilter(request, response);
                 return;
             }
         }
         else {
             chain.doFilter(request, response);
-            log.info("come in you POSTER");
+            // log.info("come in you POSTER");
             return;
         }
         // log.info(req.getHeaderNames().nextElement());
-        log.info("NYET!");
+        // log.info("NYET!");
         HttpServletResponse res = (HttpServletResponse) response;
         res.setStatus(HttpStatus.BAD_REQUEST.value());
     }

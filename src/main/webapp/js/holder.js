@@ -50,35 +50,6 @@ $(document).ready(
 
         }
 
-        $("#remove").on("click", function(event) {
-            event.preventDefault();
-            console.log("removing rent " + window.selected);
-            //TODO ALERT?
-            ajaxRemoveRentPost();
-        });
-
-        function ajaxRemoveRentPost() {
-
-            var csrfHeader = $("meta[name='_csrf_header']").attr("content");
-            var csrfToken = $("meta[name='_csrf']").attr("content");
-            var headers = {};
-
-            $.ajax({
-				type : "POST",
-				contentType : "application/json",
-				url : "/account/doRemoveRent",
-                data : ({"selected" : window.selected}),
-                headers : headers,
-				success : function (data, status, xhr) {
-					
-                    //TODO CONFIRM TO USER
-                    console.log("Successfully removed holder.");
-                    
-				}
-			});
-
-        }
-
     });
 
 function setSelected(id) {

@@ -7,7 +7,6 @@ import javax.servlet.http.HttpSession;
 import com.folders.rentaly.model.User;
 import com.folders.rentaly.persistence.dao.UserDAO;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 
 public class ForgotPasswordTokenCommand extends TokenCommand {
@@ -15,13 +14,13 @@ public class ForgotPasswordTokenCommand extends TokenCommand {
     private String userWhoForgot;
     private String forgottenPassword;
     
-    @Autowired
     private UserDAO userDAO;
 
-    public ForgotPasswordTokenCommand(Boolean isExpired, String userWhoForgot, String forgottenPassword) {
+    public ForgotPasswordTokenCommand(Boolean isExpired, String userWhoForgot, String forgottenPassword, UserDAO userDAO) {
         super(isExpired);
         this.userWhoForgot = userWhoForgot;
         this.forgottenPassword = forgottenPassword;
+        this.userDAO = userDAO;
     }
 
     @Override

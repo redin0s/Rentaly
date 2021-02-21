@@ -10,7 +10,9 @@ import com.auth0.jwt.exceptions.AlgorithmMismatchException;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.folders.rentaly.persistence.dao.RentDAO;
 import com.folders.rentaly.persistence.dao.UserDAO;
+import com.folders.rentaly.service.RentalyEmailService;
 import com.folders.rentaly.service.token.commands.ChangeEmailTokenCommand;
 import com.folders.rentaly.service.token.commands.ForgotPasswordTokenCommand;
 import com.folders.rentaly.service.token.commands.RegistrationTokenCommand;
@@ -32,6 +34,12 @@ public class TokenParser {
 
     @Autowired
     private UserDAO userDAO;
+
+    @Autowired
+    private RentDAO rentDAO;
+
+    @Autowired
+    private RentalyEmailService emailService;
 
     public TokenParser(@Value("${token.jwt.algorithm}") String algo, @Value("${token.jwt.secret}") String secret)
             throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException,
@@ -56,18 +64,17 @@ public class TokenParser {
             } catch (TokenExpiredException e) {
                 expired = true;
             }
-
             switch (dec.getClaim("type").asString()) {
                 case "registration":
-                    command = Optional.of(new RegistrationTokenCommand(expired, dec.getClaim("user").asString(),userDAO));
+                    command = Optional.of(new RegistrationTokenCommand(expired, dec.getClaim("user").asString(), userDAO));
                     break;
     
                 case "password":
-                    command = Optional.of(new ForgotPasswordTokenCommand(expired,dec.getClaim("user").asString(), dec.getClaim("pass").asString()));
+                    command = Optional.of(new ForgotPasswordTokenCommand(expired,dec.getClaim("user").asString(), dec.getClaim("pass").asString(), userDAO));
                     break;
 
                 case "holder":
-                    command = Optional.of(new RentAddHolderTokenCommand(expired, dec.getClaim("holder").asString(), dec.getClaim("realty").asInt()));
+                    command = Optional.of(new RentAddHolderTokenCommand(expired, dec.getClaim("user").asString(), dec.getClaim("rent").asInt(), userDAO, rentDAO, emailService));
                     break;
 
                 case "changeEmail":

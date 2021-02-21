@@ -18,12 +18,6 @@ $(document).ready(
     function() {
 
         // POST REQUESTS
-        /*$("#undo").on("submit", function(event) {
-            event.preventDefault();
-            if(confirm("E se poi te ne penti?")) {
-                console.log("undone changes");
-            } 
-        });*/
 
         $("#savedraft").on("click", function(event) {
             event.preventDefault();
@@ -118,7 +112,7 @@ $(document).ready(
                     console.log(data);
 					if (data == "success") {
                         console.log("Realty successfully saved.");
-                        window.location.href = "/myRealties";
+                        window.location.href = "/account";
                     }
                     else {
                         console.log("Error");

@@ -77,7 +77,10 @@
                             <a href="#" id="own-ended">Affitti terminati</a>
                         </li>
                         <li class="inactive">
-                            <a href="#" id="own-expenses">Spese</a>
+                            <a href="#" id="own-checks-r">Spese ricevute</a>
+                        </li>
+                        <li class="inactive">
+                            <a href="#" id="own-checks-notr">Spese da ricevere</a>
                         </li>
                     </ul>
                 </li>
@@ -91,7 +94,10 @@
                             <a href="#" id="rents-ended">Affitti terminati</a>
                         </li>
                         <li class="inactive">
-                            <a href="#" id="rents-expenses">Spese</a>
+                            <a href="#" id="rents-checks-r">Spese pagate</a>
+                        </li>
+                        <li class="inactive">
+                            <a href="#" id="rents-checks-notr">Spese da pagare</a>
                         </li>
                     </ul>
                 </li>

@@ -1,7 +1,19 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
+<script src="../../js/holder.js"></script>
+
 <ul class="list-group">
-    <!--TODO if empty display something to say it's empty, <a>new realty</a>-->
+    <c:if test="${empty realties}">
+        <div class="card list-group-item list-group-item-action justify-content-between align-items-center">
+            <div class="card-body">
+                <div class="row">
+                    <h4>Non hai ancora creato un immobile.</h4>
+                    <a class="btn btn-primary justify-content-center" href="/realty/new">Nuovo</a>
+                    <a class="btn btn-primary justify-content-center" id="drafts" href="#">Bozze</a>
+                </div>
+            </div>
+        </div>
+    </c:if>
     <c:forEach items="${realties}" var="r">
         <div class="card list-group-item list-group-item-action justify-content-between align-items-center">
             <div class="card-body">
@@ -45,12 +57,12 @@
 
                     <div class="col-md-4">
                         <c:choose>
-                            <c:when test = "${r.insertion == null}">
+                            <c:when test = "${r.insertion eq null}">
                                 <h4>Nessuna inserzione per questo immobile.</h4>
                             </c:when>
                             <c:otherwise>
                                 <c:choose>
-                                    <c:when test = "${r.insertion.is_visible == false || r.draft == true}">
+                                    <c:when test = "${r.insertion.is_visible eq false || r.draft eq true}">
                                         <h4>Inserzione nascosta.</h4>
                                     </c:when>
                                     <c:otherwise>
@@ -64,48 +76,10 @@
 
                     <div class="col-md-2">
                         <c:choose>
-                            <c:when test="r.draft == false">
+                            <c:when test="${r.draft eq false}">
                                 <div class="btn btn-primary justify-content-center" data-toggle="modal" data-target="#addHolderModal" onclick="setSelected(${r.id});">Aggiungi Inquilino</div>
                                 <br>
                                 <div class="btn btn-primary justify-content-center" id="deleteRealty" href="#">Elimina immobile</div>
-                            
-                                <script src="../../js/holder.js"></script>
-                                
-                                <div class="modal fade" id="addHolderModal" tabindex="-1" role="dialog" aria-labelledby="addHolderModalLabel" aria-hidden="true">
-                                    <div class="modal-dialog" role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="addHolderModalLabel">Aggiungi inquilino</h5>
-                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                                </button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <form id="addHolderForm">
-                                                    <div class="form-group row">
-                                                        <div class="col-sm-3">
-                                                            <p>Email:</p>
-                                                            <p>Costo:</p>
-                                                            <p>Inizio:</p>
-                                                            <p>Mesi:</p>
-                                                        </div>
-                                                        <div class="col-sm-9">
-                                                            <input type="email" class="form-control" id="rent-user_email">
-                                                            <input type="number" min="1" class="form-control" id="rent-cost">
-                                                            <input class="form-control it-date-datepicker" id="rent-start_date" type="text">
-                                                            <input type="number" min="0" class="form-control" id="rent-duration">
-                                                        </div>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                                <button type="button" class="btn btn-primary" data-dismiss="modal" id="addHolder">Save changes</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
                             </c:when>
 
                             <c:otherwise>
@@ -118,3 +92,38 @@
         </div>
     </c:forEach>
 </ul>
+
+<div class="modal fade" id="addHolderModal" tabindex="-1" role="dialog" aria-labelledby="addHolderModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addHolderModalLabel">Aggiungi inquilino</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="addHolderForm">
+                    <div class="form-group row">
+                        <div class="col-sm-3">
+                            <p>Email:</p>
+                            <p>Costo:</p>
+                            <p>Inizio:</p>
+                            <p>Mesi:</p>
+                        </div>
+                        <div class="col-sm-9">
+                            <input type="email" class="form-control" id="rent-user_email">
+                            <input type="number" min="1" class="form-control" id="rent-cost">
+                            <input class="form-control it-date-datepicker" id="rent-start_date" type="text">
+                            <input type="number" min="0" class="form-control" id="rent-duration">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" id="addHolder">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>

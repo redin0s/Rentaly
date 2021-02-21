@@ -1,7 +1,6 @@
 package com.folders.rentaly.model;
 
 import java.time.LocalDate;
-import java.util.List;
 
 import javax.validation.constraints.Min;
 
@@ -22,8 +21,6 @@ public class Insertion {
     private Integer cost;
 
     private LocalDate publish_date;
-
-    private List<byte[]> images;
 
     private Boolean is_visible;
 }

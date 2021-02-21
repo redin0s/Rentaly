@@ -28,6 +28,9 @@ public class RegistrationTokenCommand extends TokenCommand {
         if (u.isPresent() && !u.get().getActive()) {
             u.get().setActive(true);
             userDAO.save(u.get());
+
+            session.invalidate();
+
             model.addObject("type", "alert-dark");
             model.addObject("message", "Il tuo account è stato confermato. <a href=\"/account\">Accedi</a>");
             model.addObject("title", "Bentornato, " + u.get().getEmail() + "!");

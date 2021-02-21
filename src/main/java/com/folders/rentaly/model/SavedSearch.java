@@ -12,11 +12,13 @@ public class SavedSearch {
 
     private Integer id;
 
-    private String location;
+    private Double longitude;
+
+    private Double latitude;
 
     private Float min_price;
 
     private Float max_price;
 
-    private User holder;
+    private User user;
 }

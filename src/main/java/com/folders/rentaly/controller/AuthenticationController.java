@@ -32,8 +32,8 @@ public class AuthenticationController {
 
 	@Autowired
 	private CustomUserDetailService customUserDetailService;
-
-	@Autowired
+    
+	@Autowired    
     private RentalyEmailService emailService;
 
 	@GetMapping({"/" , "/index"})

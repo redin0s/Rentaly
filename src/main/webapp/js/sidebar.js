@@ -14,52 +14,65 @@ $(document).ready(function () {
         $(this).attr("class", "active");
     });
 
-    $('#confirm-email').on('click', function () {
+    $('#body').on('click', '#confirm-email', function () { //???
         ajaxSendNewConfirmationEmail();
     });
 
-    $('#content').on('DOMSubtreeModified', function() {
-        init();
-    });
-    
-    ajaxGetAccountData();
-});
-
-function init() {
-
-    $('#account').on('click', function () {
+    $('#sidebar').on('click' , '#account', function () {
         ajaxGetAccountData();
     });
 
-    $('#changeEmail').on('click', function () {
+    $('#content').on('click', "#changeEmail", function () {
         ajaxGetChangeEmail();
     });
 
-    $('#changePassword').on('click', function () {
+    $('#content').on('click', "#changePassword", function () {
         ajaxGetChangePassword();
     });
 
-    $('#realties').on('click', function () {
+    $('#sidebar, #content').on('click', '#realties', function () {
        ajaxGetRealties(false);
     });
 
-    $('#drafts').on('click', function () {
+    $('#sidebar').on('click', '#drafts', function () {
         ajaxGetRealties(true);
     });
 
-    $('#own-ongoing').on('click', function () {
+    $('#sidebar').on('click', '#own-ongoing', function () {
         ajaxGetRealtiesRents(false);
     });
 
-    $('#own-ended').on('click', function () {
+    $('#sidebar').on('click', '#own-ended', function () {
         ajaxGetRealtiesRents(true);
     });
 
-    $('#own-expenses').on('click', function () {
-        ajaxGetRealtiesChecks();
+    $('#sidebar').on('click', '#own-checks-r', function () {
+        ajaxGetRealtiesChecks(true);
     });
 
-}
+    $('#sidebar').on('click', '#own-checks-notr', function () {
+        ajaxGetRealtiesChecks(false);
+    });
+
+    $('#sidebar').on('click', '#rents-ongoing', function () {
+        ajaxGetRents(false);
+    });
+
+    $('#sidebar').on('click', '#rents-ended', function () {
+        ajaxGetRents(true);
+    });
+
+    $('#sidebar').on('click', '#rents-checks-r', function () {
+        ajaxGetRentsChecks(true);
+    });
+
+    $('#sidebar').on('click', '#rents-checks-notr', function () {
+        ajaxGetRentsChecks(false);
+    });
+
+
+    ajaxGetAccountData();
+});
 
 function ajaxSendNewConfirmationEmail() {
     var csrfHeader = $("meta[name='_csrf_header']").attr("content");
@@ -113,6 +126,7 @@ function ajaxGetRealties(draft) {
         contentType: "application/json",
         url: "/account/realties",
         data: ({"isDraft" : draft}),
+        headers: {"AJAX": true},
         success: function (data) {
             $('#content').html(data);
         }
@@ -125,18 +139,46 @@ function ajaxGetRealtiesRents(ended) {
         contentType: "application/json",
         url: "/account/realties-rents",
         data: ({"isEnded" : ended}),
+        headers: {"AJAX": true},
         success: function (data) {
             $('#content').html(data);
         }
     });
 }
 
-function ajaxGetRealtiesChecks() {
+function ajaxGetRealtiesChecks(paid) {
     $.ajax({
         type: "GET",
         contentType: "application/json",
         url: "/account/realties-checks",
-        data: ({}),
+        data: ({"isPaid" : paid}),
+        headers: {"AJAX": true},
+        success: function (data) {
+            $('#content').html(data);
+        }
+    });
+}
+
+function ajaxGetRents(ended) {
+    $.ajax({
+        type: "GET",
+        contentType: "application/json",
+        url: "/account/rents",
+        data: ({"isEnded" : ended}),
+        headers: {"AJAX": true},
+        success: function (data) {
+            $('#content').html(data);
+        }
+    });
+}
+
+function ajaxGetRentsChecks(paid) {
+    $.ajax({
+        type: "GET",
+        contentType: "application/json",
+        url: "/account/rents-checks",
+        data: ({"isPaid" : paid}),
+        headers: {"AJAX": true},
         success: function (data) {
             $('#content').html(data);
         }

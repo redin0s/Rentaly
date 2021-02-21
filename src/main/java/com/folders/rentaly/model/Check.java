@@ -25,4 +25,6 @@ public class Check {
     private LocalDate expire;
 
 	private Rent rent;
+
+    private Boolean paid;
 }
