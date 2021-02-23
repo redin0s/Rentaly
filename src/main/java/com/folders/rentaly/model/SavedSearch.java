@@ -14,11 +14,17 @@ public class SavedSearch {
 
     private Double longitude;
 
-    private Double latitude;
+	private Double latitude;
+
+	private Integer max_distance;
 
     private Float min_price;
 
     private Float max_price;
 
     private User user;
+
+    private String city;
+    
+    private String type;
 }

@@ -77,7 +77,7 @@ public class UserDAOJDBC extends JDBC implements UserDAO {
 			if (rs.next()) {
 				useropt = Optional.of(createUser(rs));
 			}
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			log.error("error in find user by id", e);
 		}
 

@@ -13,6 +13,6 @@ public interface CheckDAO extends DAO<Check> {
 	List<Check> findByOwnerAndExpireGreaterThanEqual(User owner, LocalDate date);
 	List<Check> findByHolderAndExpireGreaterThanEqual(User holder, LocalDate date);
 
-	Integer countByOwnerAndExpireGreaterThanEqual(User owner, LocalDate date);
-	Integer countByHolderAndExpireGreaterThanEqual(User holder, LocalDate date);
+	Integer countByOwnerAndExpireGreaterThanEqualAndPaid(User owner, LocalDate date, Boolean paid);
+	Integer countByHolderAndExpireGreaterThanEqualAndPaid(User holder, LocalDate date, Boolean paid);
 }

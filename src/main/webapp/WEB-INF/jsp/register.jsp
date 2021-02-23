@@ -15,7 +15,6 @@
     <script src="../../js/register.js"></script>
 
 	<div class="login-register">
-        <!-- <form method="post" action="register" id="register"> -->
         <form id="register-form">
             <h2 class="sr-only">Registrati</h2>
 

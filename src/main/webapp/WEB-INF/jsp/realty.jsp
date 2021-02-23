@@ -15,11 +15,10 @@
     <script src="../../js/realty.js"></script> <!--change later-->
     <br>
     <div class="container">
-        <form id="realty">
-
+        <form id="realty" enctype="multipart/form-data">
             <sec:csrfInput />
             <input type="hidden" id="id" value='${realty.id}'>
-            <input type="hidden" id="latitude" value='${realty.longitude}'>
+            <input type="hidden" id="latitude" value='${realty.latitude}'>
             <input type="hidden" id="longitude" value='${realty.longitude}'>
 
             <div class="row">
@@ -46,7 +45,7 @@
 
                         <div class="col-12">
                             <div class="form-group">
-                                <input class="form-control" type="text" id="address" placeholder="Via">
+                                <input class="form-control" type="text" id="address" placeholder="Via" value="${realty.address}">
                             </div>
                         </div>
 
@@ -89,12 +88,35 @@
 
                 
                 <div class="col-lg-6">
-                    <p> images </p>
+                        <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+                        <ol class="carousel-indicators">
+
+                        <c:forEach items="${images}" var="img" varStatus="loop">
+                            <li data-target="#carouselExampleIndicators" data-slide-to="${loop.index}" class="<c:if test='${loop.index == 0}'>active</c:if>"></li>
+                        </c:forEach>
+                        </ol>
+                        <div class="carousel-inner">
+                            <c:forEach items="${images}" var="img" varStatus="loop">
+                            <div class="carousel-item <c:if test='${loop.index == 0}'>active</c:if>">
+                            <img class="d-block w-100" src="/${img}" alt="First slide">
+                            </div>
+                            </c:forEach>
+                        </div>
+                        <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                        <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Next</span>
+                        </a>
+                        </div>
+                    <input type='file' id='files' name='files' multiple>
                 </div>
                 <div class="col-lg-4">
                     <label for="desc">Descrizione:</label>
                     <div class="form-group">
-                        <textarea class="form-control" id="description" rows="5"></textarea>
+                        <textarea class="form-control" id="description" rows="5">${realty.insertion.description}</textarea>
                     </div>
                 </div>
                 <div class="col-lg-2">
@@ -104,16 +126,17 @@
                     </div>
                 </div>
             </div>
-            <div class="row">
+            <div class="row button-row">
                 <c:choose>
                     <c:when test="${realty.draft == true}">
-                        <button class="btn btn-danger btn-block col-4" type="submit" id="undo" href="myRealties">Annulla</button>
-                        <button class="btn btn-light btn-block col-4" type="button" id="savedraft">Salva bozza</button>
-                        <button class="btn btn-primary btn-block col-4" type="button" id="save">Salva</button>
+                        <button class="btn btn-danger btn-block col" type="submit" id="undo" href="/account">Annulla</button>
+                        <button class="btn btn-secondary btn-block col" type="button" id="savedraft">Salva bozza</button>
+                        <button class="btn btn-success btn-block col" type="button" id="save">Salva</button>
                     </c:when>
                     <c:otherwise>
-                        <button class="btn btn-danger btn-block col-6" type="submit" id="undo" href="myRealties">Annulla</button>
-                        <button class="btn btn-primary btn-block col-6" type="button" id="save">Salva</button>
+                        <button class="btn btn-danger btn-block col" type="submit" id="undo" href="#">Annulla</button>
+                        <div class="col"></div>
+                        <button class="btn btn-success col" type="button" id="save">Salva</button>
                     </c:otherwise>
                 </c:choose>
             </div>

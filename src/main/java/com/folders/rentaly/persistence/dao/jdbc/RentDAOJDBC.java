@@ -42,7 +42,14 @@ public class RentDAOJDBC extends JDBC implements RentDAO {
 		rent.setCost(rs.getInt("cost"));
 		rent.setStart(rs.getObject("start_date", LocalDate.class));
 		rent.setEnd(rs.getObject("end_date", LocalDate.class));
-		rent.setHolder(userDAO.get(rs.getInt("holder_id")).get());
+		Integer id = rs.getInt("holder_id");
+		if (rs.wasNull()) {
+			id = null;
+		}
+		Optional<User> user = userDAO.get(id);
+		if (user.isPresent()) {
+			rent.setHolder(user.get());
+		}
 		rent.setRealty(realtyDAO.get(rs.getInt("realty_id")).get());
 		return rent;
 	}
@@ -140,9 +147,6 @@ public class RentDAOJDBC extends JDBC implements RentDAO {
 
 			while (rs.next()) {
 				Rent rent = createSafeRent(rs);
-				Realty r = new Realty();
-				r.setId(rs.getInt("realty_id"));
-				rent.setRealty(r);
 				rent.setHolder(holder);
 
 				ls.add(rent);

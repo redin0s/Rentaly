@@ -9,11 +9,13 @@ import javax.servlet.http.HttpSession;
 
 import com.folders.rentaly.model.Realty;
 import com.folders.rentaly.model.Rent;
+import com.folders.rentaly.model.SavedSearch;
 import com.folders.rentaly.model.User;
 import com.folders.rentaly.model.Check;
 import com.folders.rentaly.persistence.dao.CheckDAO;
 import com.folders.rentaly.persistence.dao.RealtyDAO;
 import com.folders.rentaly.persistence.dao.RentDAO;
+import com.folders.rentaly.persistence.dao.SavedSearchDAO;
 import com.folders.rentaly.service.CustomUserDetailService;
 import com.folders.rentaly.service.RentalyEmailService;
 
@@ -52,6 +54,9 @@ public class AccountController {
 
     @Autowired
     private RentalyEmailService emailService;
+
+    @Autowired
+    private SavedSearchDAO savedSearchDAO;
     
     @GetMapping("")           
 	public ModelAndView account(ModelAndView model, HttpSession session) {
@@ -86,7 +91,7 @@ public class AccountController {
         else {
             model.addObject("rents", ongoingRents);
         }
-
+        model.addObject("owner", true);
         return model;
     } 
 
@@ -116,7 +121,7 @@ public class AccountController {
         else {
             model.addObject("rents", ongoingRents);
         }
-
+        model.addObject("owner", false);
         return model;
     } 
 
@@ -136,7 +141,6 @@ public class AccountController {
         try {
             String holderEmail = content.getAsString("user_email");
             Integer duration = Integer.parseInt(content.getAsString("duration"));
-            //TODO Validate input
             Integer realty_id = Integer.parseInt(content.getAsString("realty_id"));
             Integer cost = Integer.parseInt(content.getAsString("cost"));
             if (duration <= 0 || realty_id <= 0 || cost <= 0)
@@ -166,10 +170,10 @@ public class AccountController {
         LocalDate date = LocalDate.now();
         Integer realtiesCount = realtyDAO.countByOwnerAndDraft(u, false);
         Integer ownRentsCount = rentDAO.countByRealty_OwnerAndEndGreaterThanEqual(u, LocalDate.now());
-        Integer ownChecksToPayCount = checkDAO.countByOwnerAndExpireGreaterThanEqual(u, date);
+        Integer ownChecksToPayCount = checkDAO.countByOwnerAndExpireGreaterThanEqualAndPaid(u, date, false);
 
         Integer rentsCount = rentDAO.findByHolderAndEndGreaterThanEqual(u, LocalDate.now()).size();
-        Integer checksToPayCount = checkDAO.countByHolderAndExpireGreaterThanEqual(u, date);
+        Integer checksToPayCount = checkDAO.countByHolderAndExpireGreaterThanEqualAndPaid(u, date, false);
 
         model.addObject("realtiesCount", realtiesCount);
         model.addObject("ownRentsCount", ownRentsCount);
@@ -267,4 +271,14 @@ public class AccountController {
         return new ResponseEntity<String>("error", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @GetMapping("/savedsearches")
+    public ModelAndView savedSearches(HttpSession session, ModelAndView model) {
+        model.setViewName("savedsearches");
+
+        Optional<User> user = customUserDetailService.getUser(session);
+        List<SavedSearch> searches = savedSearchDAO.findSavedSearchByUser(user.get());
+
+        model.addObject("searches", searches);
+        return model;
+    }
 }

@@ -52,10 +52,12 @@ public class RealtyDAOJDBC extends JDBC implements RealtyDAO {
 	private Insertion createInsertion(ResultSet rs) throws SQLException {
 		Insertion insertion = new Insertion();
 		insertion.setId(rs.getInt("insertion_id"));
+		if (rs.wasNull()) {
+			insertion.setId(null);
+		}
 		if (insertion.getId() != null) {
 			insertion.setCost(rs.getInt("cost"));
 			insertion.setDescription(rs.getString("description"));
-			insertion.setPublish_date(rs.getObject("publish_date", LocalDate.class));
 			insertion.setIs_visible(rs.getBoolean("is_visible"));
 		}
 		return insertion;
@@ -147,17 +149,18 @@ public class RealtyDAOJDBC extends JDBC implements RealtyDAO {
 	}
 
 	@Override
-	public List<Realty> findClosestToPoint(Float lat, Float lon) {
+	public List<Realty> findClosestToPoint(Double lat, Double lon, Integer distance) {
 		List<Realty> ls = new ArrayList<Realty>();
         String query = "SELECT * FROM (" + "SELECT *, " + "(6371 * acos(cos(radians(?)) * "
 					+ "cos(radians(latitude)) * cos(radians(longitude) -" + "radians(?)) + sin(radians(?)) *"
 					+ "sin(radians(latitude)))) " + "AS distance FROM realty WHERE insertion_id IS NOT NULL) AS t "
-					+ "INNER JOIN insertion ON t.insertion_id=insertion.id WHERE t.distance < 20 ORDER BY t.distance "
+					+ "INNER JOIN insertion ON t.insertion_id=insertion.id WHERE t.distance < ? ORDER BY t.distance "
 					+ "LIMIT 20 OFFSET 0";
 		try (Connection con = dbSource.getConnection(); PreparedStatement st = con.prepareStatement(query);) {
-			st.setFloat(1, lat);
-			st.setFloat(2, lon);
-			st.setFloat(3, lat);
+			st.setDouble(1, lat);
+			st.setDouble(2, lon);
+			st.setDouble(3, lat);
+			st.setInt(4, distance);
 			ResultSet rs = st.executeQuery();
 			if (rs.next() == false) {
 				log.info("search gave no result");
@@ -174,6 +177,37 @@ public class RealtyDAOJDBC extends JDBC implements RealtyDAO {
 		}
 		return ls;
 	}
+	
+	@Override
+	public List<Realty> findClosestToPointAndType(Double lat, Double lon, Integer distance, String type) {
+		List<Realty> ls = new ArrayList<Realty>();
+        String query = "SELECT * FROM (" + "SELECT *, " + "(6371 * acos(cos(radians(?)) * "
+					+ "cos(radians(latitude)) * cos(radians(longitude) -" + "radians(?)) + sin(radians(?)) *"
+					+ "sin(radians(latitude)))) " + "AS distance FROM realty WHERE insertion_id IS NOT NULL AND lower(type) = lower(?)) AS t "
+					+ "INNER JOIN insertion ON t.insertion_id=insertion.id WHERE t.distance < ? ORDER BY t.distance "
+					+ "LIMIT 20 OFFSET 0";
+		try (Connection con = dbSource.getConnection(); PreparedStatement st = con.prepareStatement(query);) {
+			st.setDouble(1, lat);
+			st.setDouble(2, lon);
+			st.setDouble(3, lat);
+			st.setString(4, type);
+			ResultSet rs = st.executeQuery();
+			if (rs.next() == false) {
+				log.info("search gave no result");
+			} else {
+				do {
+					Realty realty = createSafeRealty(rs);
+					ls.add(realty);
+					log.info(realty.toString());
+				} while (rs.next());
+			}
+		} catch (SQLException e) {
+			log.info(e.getMessage());
+			log.trace(e.getStackTrace().toString());
+		}
+		return ls;
+	} 
+
 
 	@Override
 	public Optional<Realty> get(Integer id) {
@@ -195,10 +229,11 @@ public class RealtyDAOJDBC extends JDBC implements RealtyDAO {
 	@Override
 	public void save(Realty t) {
 		String  query = "INSERT INTO realty" + "(type, square_meters, max_holders, owner_id, "
-					+ "latitude, longitude, insertion_id, city, " + "address, is_draft, current_holders,id) "
-					+ "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)" +
+					+ "latitude, longitude, insertion_id, city, " + "address, is_draft, id) "
+					+ "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)" +
                     " ON CONFLICT (id) DO UPDATE SET type=EXCLUDED.type, square_meters=EXCLUDED.square_meters, max_holders=EXCLUDED.max_holders, owner_id=EXCLUDED.owner_id, "+
-                    "type=EXCLUDED.type, square_meters=EXCLUDED.square_meters, max_holders=EXCLUDED.max_holders, owner_id=EXCLUDE.owner_id";
+                    "latitude=EXCLUDED.latitude, longitude=EXCLUDED.longitude, insertion_id=EXCLUDED.insertion_id, city=EXCLUDED.city, address=EXCLUDED.address,"+
+					"is_draft=EXCLUDED.is_draft";
 		try (Connection con = dbSource.getConnection(); PreparedStatement st = con.prepareStatement(query);) {
 			if (t.getId() == null)
                 t.setId(getNextId());
@@ -215,12 +250,11 @@ public class RealtyDAOJDBC extends JDBC implements RealtyDAO {
 			st.setString(8, t.getCity());
 			st.setString(9, t.getAddress());
 			st.setBoolean(10, t.getDraft());
-			st.setInt(11, t.getCurrent_holders());
-            st.setInt(12, t.getId());
+            st.setInt(11, t.getId());
 			st.executeUpdate();
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			log.error("error in realty save", e);
 		}
 	}
 
@@ -231,7 +265,7 @@ public class RealtyDAOJDBC extends JDBC implements RealtyDAO {
 			st.setInt(1, t.getId());
 			st.executeUpdate();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			log.error("error in delete", e);
 		}
 
 	}

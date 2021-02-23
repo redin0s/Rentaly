@@ -8,7 +8,7 @@ services:
         environment:
             POSTGRES_PASSWORD: segretodistato
         volumes:
-            - ./db-data:/var/lib/postgresql/data
+            - ./db-data:/var/lib/postgresql/data:z
         ports:
             - 5432:5432
 

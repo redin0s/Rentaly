@@ -11,16 +11,21 @@
 	<body>
 		<%@include file="includes/header.jsp" %>
 
-			<div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+			<div id="indexCarousel" class="carousel slide" data-ride="carousel">
 				<div class="carousel-inner" role="listbox">
 					<div class="carousel-item index active">
-						<img src="https://source.unsplash.com/LAaSoL0LrYs/1920x1080" class="d-block w-100">
+						<!--img src="https://source.unsplash.com/LAaSoL0LrYs/1920x1080"-->
+						<img src="/images/apartment_buildings-wallpaper-1920x1080.jpg">
 					</div>
 					<div class="carousel-item index">
-						<img src="https://source.unsplash.com/bF2vsubyHcQ/1920x1080" class="d-block w-100">
+						<!--img src="https://source.unsplash.com/bF2vsubyHcQ/1920x1080"-->
+						<img src="/images/Betts-Luxury-apartment.png">			
 					</div>
 					<div class="carousel-item index">
-						<img src="https://source.unsplash.com/szFUQoyvrxM/1920x1080" class="d-block w-100">
+						<!--img src="https://source.unsplash.com/szFUQoyvrxM/1920x1080"-->
+						<img src="/images/buildings_up-wallpaper-1920x1080.jpg">
+
+						<!-- <img src="https://i.imgur.com/VAViwrf.jpg"> -->
 					</div>
 					<section id="hero">
 						<div class="hero-container">

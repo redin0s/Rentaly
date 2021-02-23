@@ -8,8 +8,8 @@
             <div class="card-body">
                 <div class="row">
                     <h4>Non hai ancora creato un immobile.</h4>
-                    <a class="btn btn-primary justify-content-center" href="/realty/new">Nuovo</a>
-                    <a class="btn btn-primary justify-content-center" id="drafts" href="#">Bozze</a>
+                    <a class="btn btn-success justify-content-center" href="/realty/new">Nuovo</a>
+                    <a class="btn btn-success justify-content-center" id="drafts" href="#">Bozze</a>
                 </div>
             </div>
         </div>
@@ -69,7 +69,7 @@
                                         <h4>Inserzione visibile.</h4>
                                     </c:otherwise>
                                 </c:choose>
-                                <div class="btn btn-primary justify-content-center" id="deleteInsertion" href="#">Elimina inserzione</div>
+                                <div class="btn btn-danger justify-content-center" id="deleteInsertion" href="#">Elimina inserzione</div>
                             </c:otherwise>
                         </c:choose>
                     </div>
@@ -77,13 +77,13 @@
                     <div class="col-md-2">
                         <c:choose>
                             <c:when test="${r.draft eq false}">
-                                <div class="btn btn-primary justify-content-center" data-toggle="modal" data-target="#addHolderModal" onclick="setSelected(${r.id});">Aggiungi Inquilino</div>
+                                <div class="btn btn-success justify-content-center" data-toggle="modal" data-target="#addHolderModal" onclick="setSelected(${r.id});">Aggiungi Inquilino</div>
                                 <br>
-                                <div class="btn btn-primary justify-content-center" id="deleteRealty" href="#">Elimina immobile</div>
+                                <div class="btn btn-danger justify-content-center" id="deleteRealty" href="#">Elimina immobile</div>
                             </c:when>
 
                             <c:otherwise>
-                                <div class="btn btn-primary justify-content-center" id="deleteRealty" href="#">Elimina bozza</div>
+                                <div class="btn btn-danger justify-content-center" id="deleteRealty" href="#">Elimina bozza</div>
                             </c:otherwise>
                         </c:choose>
                     </div>

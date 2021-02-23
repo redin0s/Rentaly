@@ -32,14 +32,22 @@ $(document).ready(
         });
 
         function getFormData() {
+            // var form = new FormData();
+            // // form.append("files", $("#files")[0].files);
+            // let files = $("#files")[0].files;
+            // for(var i=0; i < files.length; i++){
+            //     form.append('files[' + i + ']', files[i]);
+            // }
+
+            var formData = new FormData($('#realty')[0]);
+
             var i = 
-                ($("#is_visible").is(':checked') == false && 
+                (($("#description").val() == "" || $("#description").val() == null) && 
                 ($("#cost").val() == 0 || $("#cost").val() == null))
                     ? null
                     : {
                         is_visible : $("#is_visible").is(':checked'),
                         description : $("#description").val(),
-                        //pictures?
                         cost : $("#cost").val()
                     };
             var r = {
@@ -51,7 +59,6 @@ $(document).ready(
                 type : $("#type").val(),
                 square_meters : $("#square_meters").val(),
                 max_holders : ($("#max_holders").val() <= 0) ? 0 : $("#max_holders").val(),
-                current_holders : 0,
                 insertion : i
             };
 
@@ -61,7 +68,12 @@ $(document).ready(
             if (r.max_holders == "" || r.max_holders == null) {
                 r.max_holders = 0;
             }
-            return r;
+
+            let data = JSON.stringify(r);
+            formData.append('realty', new Blob([data], {
+                type: "application/json"
+            } ));
+            return formData;
         }
 
         function ajaxDraftPost() {
@@ -75,19 +87,18 @@ $(document).ready(
 
             $.ajax({
 				type : "POST",
-				contentType : "application/json",
+				// contentType : "application/json",
 				url : "doSaveDraft",
-                data : JSON.stringify(getFormData()),
+                enctype: 'multipart/form-data',
+                data : getFormData(),
+                processData: false,
+                contentType: false,
+                cache: false,
                 headers : headers,
 				success : function (data, status, xhr) {
-                    console.log(data);
-					if (data == "success") {
-                        console.log("Draft successfully saved.");
-                        window.location.href = "/myRealties";
-                    }
-                    else {
-                        console.log("Error");
-                    }
+                    console.log("Draft successfully saved.");
+                    window.location.href = "/account";
+                    
 				}
 			});
 
@@ -104,19 +115,17 @@ $(document).ready(
 
             $.ajax({
 				type : "POST",
-				contentType : "application/json",
+				// contentType : "application/json",
+                enctype: 'multipart/form-data',
+                data : getFormData(),
+                processData: false,
+                contentType: false,
+                cache: false,
 				url : "doSaveRealty",
-                data : JSON.stringify(getFormData()),
                 headers : headers,
 				success : function (data, status, xhr) {
-                    console.log(data);
-					if (data == "success") {
-                        console.log("Realty successfully saved.");
-                        window.location.href = "/account";
-                    }
-                    else {
-                        console.log("Error");
-                    }
+                    console.log("Realty successfully saved.");
+                    window.location.href = "/account";
 				}
 			});
 

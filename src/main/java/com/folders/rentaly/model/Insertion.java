@@ -20,7 +20,5 @@ public class Insertion {
     @Min(0)
     private Integer cost;
 
-    private LocalDate publish_date;
-
     private Boolean is_visible;
 }

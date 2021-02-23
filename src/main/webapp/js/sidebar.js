@@ -9,12 +9,25 @@ $(document).ready(function () {
         $('#sidebar').removeClass('active');
     });
 
+    $('#problemSubmit').click(function (e) {
+        e.preventDefault();
+        $('#problemsModal').text($('#segnalation-form').serialize());
+        $('#problemsModal').modal('hide');
+        /*
+        $.post('http://path/to/post', 
+           $('#myForm').serialize(), 
+           function(data, status, xhr){
+             // do something here with response;
+           });
+        */
+    });
+    
     $('.inactive').on('click', function () {
         $('.active').attr("class", "inactive");
         $(this).attr("class", "active");
     });
 
-    $('#body').on('click', '#confirm-email', function () { //???
+    $('#body').on('click', '#confirm-email', function () { 
         ajaxSendNewConfirmationEmail();
     });
 
@@ -70,6 +83,9 @@ $(document).ready(function () {
         ajaxGetRentsChecks(false);
     });
 
+    $('#sidebar').on('click', '#saved-searches', function () {
+        ajaxGetSavedSearches();
+    });
 
     ajaxGetAccountData();
 });
@@ -84,6 +100,17 @@ function ajaxSendNewConfirmationEmail() {
         type: "POST",
         url: "/account/sendNewConfirmationEmail",
         headers: headers
+    });
+}
+
+function ajaxGetSavedSearches() {
+    $.ajax({
+        type: "GET",
+        url: "/account/savedsearches",
+        headers: {"AJAX": true},
+        success : function(data) {
+            $('#content').html(data);
+        }
     });
 }
 

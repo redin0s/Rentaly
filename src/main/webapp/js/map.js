@@ -13,7 +13,10 @@ function GetMap() {
     map = new Microsoft.Maps.Map('#map');
 
     Microsoft.Maps.Events.addHandler(map, 'click', changeMarker)
-    geocodeQuery("Rome Italy");
+    let location = new Microsoft.Maps.Location(document.getElementById('latitude').value, document.getElementById('longitude').value);
+    console.log(location);
+    pinMap(location);
+    reverseGeocode(location);
 }
 
 function changeMarker(e) {
@@ -38,6 +41,7 @@ function pinMap(location) {
     map.entities.clear()
     map.entities.push(pin);
 }
+
 function geocodeQuery(query) {
     //If search manager is not defined, load the search module.
     if (!searchManager) {
@@ -80,9 +84,12 @@ function reverseGeocode(location) {
             location: location,
             callback: function (r) {
                 //Tell the user the name of the result.
-                // alert(r.name);
                 selected = r;
                 updateForm();
+                map.setView({
+                    center: location,
+                    zoom: 15
+                });
             },
             errorCallback: function (e) {
                 //If there is an error, alert the user about it.
@@ -93,8 +100,7 @@ function reverseGeocode(location) {
         //Make the reverse geocode request.
         searchManager.reverseGeocode(searchRequest);
     }
-  }
-    
-  
-    
-  window.onload = GetMap();
+}  
+
+
+window.onload = GetMap();

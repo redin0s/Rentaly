@@ -170,12 +170,13 @@ public class CheckDAOJDBC extends JDBC implements CheckDAO {
 	}
 
 	@Override
-	public Integer countByOwnerAndExpireGreaterThanEqual(User owner, LocalDate date) {
+	public Integer countByOwnerAndExpireGreaterThanEqualAndPaid(User owner, LocalDate date, Boolean paid) {
 		Integer count = 0;
-        String query = "SELECT COUNT(*) FROM \"check\" JOIN rent ON \"check\".rent_id = rent.id JOIN realty ON rent.realty_id = realty.id WHERE realty.owner_id=? AND expire >= ?";
+        String query = "SELECT COUNT(*) FROM \"check\" JOIN rent ON \"check\".rent_id = rent.id JOIN realty ON rent.realty_id = realty.id WHERE realty.owner_id=? AND expire >= ? AND paid = ?";
 		try (Connection con = dbSource.getConnection(); PreparedStatement st = con.prepareStatement(query);) {
 			st.setInt(1, owner.getId());
 			st.setObject(2, date);
+			st.setBoolean(3, paid);
 			ResultSet rs = st.executeQuery();
 			if (rs.next()) {
 				count = rs.getInt(1);
@@ -189,12 +190,13 @@ public class CheckDAOJDBC extends JDBC implements CheckDAO {
 	}
 
 	@Override
-	public Integer countByHolderAndExpireGreaterThanEqual(User holder, LocalDate date) {
+	public Integer countByHolderAndExpireGreaterThanEqualAndPaid(User holder, LocalDate date, Boolean paid) {
 		Integer count = 0;
-        String query = "SELECT COUNT(*) FROM \"check\" JOIN rent ON \"check\".rent_id = rent.id WHERE rent.holder_id=? and expire >= ?";
+        String query = "SELECT COUNT(*) FROM \"check\" JOIN rent ON \"check\".rent_id = rent.id WHERE rent.holder_id=? and expire >= ? and paid = ?";
 		try (Connection con = dbSource.getConnection(); PreparedStatement st = con.prepareStatement(query);) {
 			st.setInt(1, holder.getId());
 			st.setObject(2, date);
+			st.setBoolean(3, paid);
 			ResultSet rs = st.executeQuery();
 			if (rs.next()) {
 				count = rs.getInt(1);

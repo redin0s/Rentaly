@@ -22,10 +22,12 @@ public class InsertionDAOJDBC extends JDBC implements InsertionDAO {
 		super("insertion");
 	}
 
-	private Insertion createInsertion(ResultSet rs) {
+	private Insertion createInsertion(ResultSet rs) throws SQLException {
 		Insertion insertion = new Insertion();
-
-		//TODO do this
+		insertion.setId(rs.getInt("id"));
+		insertion.setCost(rs.getInt("cost"));
+		insertion.setDescription(rs.getString("description"));
+		insertion.setIs_visible(rs.getBoolean("is_visible"));
 		return insertion;
 	}
 
@@ -52,17 +54,16 @@ public class InsertionDAOJDBC extends JDBC implements InsertionDAO {
 
 	@Override
 	public void save(Insertion t) {
-		String query = "UPSERT INTO insertion (description,cost,publish_date,is_visible,id) VALUES (?,?,?,?,?) " +
-		"ON CONFLICT (id) DO UPDATE SET description=EXCLUDED.description, cost=EXCLUDED.cost, publish_date=EXCLUDED.publish_date, is_visible=EXCLUDED.is_visible";
+		String query = "INSERT INTO insertion (description,cost,is_visible,id) VALUES (?,?,?,?) " +
+		"ON CONFLICT (id) DO UPDATE SET description=EXCLUDED.description, cost=EXCLUDED.cost, is_visible=EXCLUDED.is_visible";
 
 		try (Connection con = dbSource.getConnection(); PreparedStatement st = con.prepareStatement(query);) {
 			if(t.getId() == null)
 				t.setId(getNextId());
 			st.setString(1, t.getDescription());
 			st.setFloat(2, t.getCost());
-			st.setObject(3, t.getPublish_date());
-			st.setBoolean(4, t.getIs_visible());
-			st.setInt(5, t.getId());
+			st.setBoolean(3, t.getIs_visible());
+			st.setInt(4, t.getId());
 			st.executeUpdate();
 		} catch (SQLException e) {
 			log.error("error in insert/update user", e);

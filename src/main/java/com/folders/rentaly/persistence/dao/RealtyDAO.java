@@ -16,7 +16,8 @@ public interface RealtyDAO extends DAO<Realty>{
 
     List<Realty> findByOwnerAndDraft(User owner, Boolean draft);
 
-    List<Realty> findClosestToPoint(Float lat, Float lon);
+    List<Realty> findClosestToPoint(Double lat, Double lon, Integer distance);
+	List<Realty> findClosestToPointAndType(Double lat, Double lon, Integer distance, String type);
 
     Integer countByOwnerAndDraft(User owner, Boolean draft);
 }
