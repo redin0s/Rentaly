@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
-<script src="../../js/checks.js"></script>
+<script src="/js/checks.js"></script>
 <ul class="list-group">
     <c:if test="${empty checks}">
         <div class="card list-group-item list-group-item-action justify-content-between align-items-center">
@@ -18,12 +18,22 @@
 
                 <c:if test="${owner eq true}">
                     <div class="row">
-                        <a class="btn btn-primary" id="realties" href="#">Immobili</a>
+                        <a class="btn btn-success" id="realties-rents" href="javascript:;">Affitti</a>
                     </div>
                 </c:if>
             </div>
         </div>
     </c:if>
+
+    <c:choose>
+        <c:when test="${owner eq true}">
+            <input type="hidden" value="1" id="owner-check">
+        </c:when>
+        <c:otherwise>
+            <input type="hidden" value="0" id="owner-check">
+        </c:otherwise>
+    </c:choose>
+
     <c:forEach items="${checks}" var="c">
         <div class="card list-group-item list-group-item-action justify-content-between align-items-center">
             <div class="card-body">
@@ -83,7 +93,7 @@
                                 <h4>Pagata</h4>
                             </c:when>
                             <c:otherwise>
-                                <a id="paybutton" onclick="setSelected(${c.id});" class="btn btn-success" href="#">Pagata</a>
+                                <a id="paybutton" onclick="setSelected(${c.id});" class="btn btn-success" href="javascript:;">Paga</a>
                             </c:otherwise>
                         </c:choose>
                     </div>

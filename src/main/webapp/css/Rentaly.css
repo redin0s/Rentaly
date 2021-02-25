@@ -7,6 +7,21 @@ a {
     color: #4aa05e;
 }
 
+.footer {
+    position: relative;
+    bottom: 0;
+    width: 100%;
+    /*height: 2.5rem; /* Footer height */
+}
+
+html {
+    height: 100%
+}
+
+body {
+    min-height: 100%
+}
+
 .button-row button.btn.btn-block {
     height: 45px;
     margin-top: 0px;
@@ -393,3 +408,17 @@ ul ul a {
         margin-left: 15px;
         width: 100%;
     }
+
+footer {
+    position: relative;
+    margin-bottom: 0vh;
+}
+
+.minicarousel {
+    max-width: 500px;
+    max-height: 500px;
+}
+
+.page-wrap {
+    min-height: 100vh;
+}

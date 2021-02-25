@@ -44,7 +44,7 @@ public class SavedSearchDAOJDBC extends JDBC implements SavedSearchDAO {
 		try (Connection con = dbSource.getConnection(); PreparedStatement st = con.prepareStatement(query);) {
 			st.setInt(1, t.getId());
 			ResultSet rs = st.executeQuery();
-			if (rs.next()) {
+			while (rs.next()) {
 				SavedSearch savedsearchopt = createSavedSearch(rs);
                 savedsearchopt.setUser(t);
 				ls.add(savedsearchopt);
@@ -93,7 +93,19 @@ public class SavedSearchDAOJDBC extends JDBC implements SavedSearchDAO {
 			st.setInt(1, t.getId());
 			st.executeUpdate();
 		} catch (SQLException e) {
-			log.error("error in delete user", e);
+			log.error("error in delete savedsearch", e);
+		}
+	}
+
+	@Override
+	public void deleteByUser(Integer id, User user) {
+		String query = "DELETE FROM saved_search WHERE id = ? AND user_id = ?";
+		try (Connection con = dbSource.getConnection(); PreparedStatement st = con.prepareStatement(query);) {
+			st.setInt(1, id);
+			st.setInt(2, user.getId());
+			st.executeUpdate();
+		} catch (SQLException e) {
+			log.error("error in delete savedsearch with id", e);
 		}
 	}
 }

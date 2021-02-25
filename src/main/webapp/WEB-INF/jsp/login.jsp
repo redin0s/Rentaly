@@ -6,7 +6,7 @@
 <head>
 	<%@include file="includes/import.jsp" %>
 	<title>Accedi - Rentaly</title>
-    <link rel="stylesheet" href="../../css/Login-Register.css">
+    <link rel="stylesheet" href="/css/Login-Register.css">
 </head>
 
 <body>
@@ -32,17 +32,26 @@
 
             <c:choose>
                 <c:when test="${param.error != null}">
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        <p id="error">Email o password sbagliata. <a href="#">Hai dimenticato la password?</a> </p>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert"">
+                        <p id="error">
+                            Email o password sbagliata. <a href="/forgot">Hai dimenticato la password?</a> 
+                            <br>
+                            Non hai ancora un account? <a href="/register">Registrati</a>
+                        </p>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
                     </div>
                 </c:when>
+                <c:otherwise>
+                    <div class="bottom">
+                        <a href="/forgot">Hai dimenticato la password?</a>
+                        <p>Non hai ancora un account? <a href="/register">Registrati</a></p>
+                    </div>
+                </c:otherwise>
             </c:choose>
 
-            <div class="bottom">
-                <a href="forgot">Hai dimenticato la password?</a>
-                <p>Non hai ancora un account? <a href="register">Registrati</a></p>
-            </div>
+            
         </form>
     </div> 
 

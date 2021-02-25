@@ -7,12 +7,12 @@
 <head>
 	<%@include file="includes/import.jsp" %>
 	<title>Registrati - Rentaly</title>
-    <link rel="stylesheet" href="../../css/Login-Register.css">
+    <link rel="stylesheet" href="/css/Login-Register.css">
 </head>
 
 <body>
     <%@include file="includes/header.jsp" %>
-    <script src="../../js/register.js"></script>
+    <script src="/js/register.js"></script>
 
 	<div class="login-register">
         <form id="register-form">
@@ -30,20 +30,14 @@
             <div class="form-group">
                 <button class="btn btn-primary btn-block" type="submit">Registrati</button>
             </div>
+            <div id="error" class="alert alert-danger alert-dismissible fade show" role="alert">
+                <p>Errore nella registrazione, riprova più tardi.</p>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
 
-            <c:choose>
-                <c:when test="${param.error != null}">
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        <p id="error">Utente già registrato. <a href="/login">Clicca qui per accedere.</a> </p>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                </c:when>
-
-                <c:otherwise>
-                    <p class="bottom">Hai già un account? <a href="login">Accedi</a></p>
-                </c:otherwise>
-            </c:choose>
-
+            <p class="bottom">Hai già un account? <a href="login">Accedi</a></p>
         </form>
     </div> 
 

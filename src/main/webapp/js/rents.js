@@ -3,15 +3,19 @@ $(document).ready(function () {
         dateFormat: 'dd/mm/yy'
     });
 
-    $('#deleteRent').on('click', function () {
-        ajaxDeleteRent();
+    $('#terminateRent').on('click', function () {
+        $("#deleteConfirm").unbind();
+        $("#deleteConfirm").on("click", function (event) {
+            ajaxDoTerminateRent();
+        });
+        $('#deleteModal').modal('show');
     });
     $('#saveCheck').on('click', function () {
         ajaxAddCheck();
     });
 });
 
-function ajaxDeleteRent() {
+function ajaxDoTerminateRent() {
     var csrfHeader = $("meta[name='_csrf_header']").attr("content");
     var csrfToken = $("meta[name='_csrf']").attr("content");
     var headers = {};
@@ -19,19 +23,12 @@ function ajaxDeleteRent() {
     headers[csrfHeader] = csrfToken;
     $.ajax({
         type: "POST",
-        contentType: "application/json",
-        url: "/account/removeRent",
-        data: ({ "selected": window.selected }),
+        url: "/account/doTerminateRent",
+        data: { "id": window.selected },
         headers: headers,
         success: function (data, status, xhr) {
-            console.log(data);
-            if (data == "success") {
-                console.log("Successfully removed rent.");
-                location.reload();
-            }
-            else {
-                console.log("Error");
-            }
+            $("#okModalContent").html("Affitto terminato con successo.");
+            $("#okModal").modal('show');
         }
     });
 }
@@ -59,13 +56,23 @@ function ajaxAddCheck() {
         headers: headers,
         success: function (data, status, xhr) {
             console.log(data);
-            if (data == "success") {
-                console.log("Successfully added check.");
-                window.location.reload();
-            }
-            else {
-                console.log("Error");
-            }
+            console.log("Successfully added check.");
+
+            $("#check-type").val("Luce");
+            $("#check-cost").val("");
+            $("#check-end_date").val("");
+
+            ajaxGetRealtiesChecks($("#check-paid").val() == "Si")
+            
+            $('.active').attr("class", "inactive");
+
+            if($("#check-paid").val() == "Si")
+                $('#own-checks-r').parent().attr("class", "active");
+            else
+                $('#own-checks-notr').parent().attr("class", "active");
+
+            $("#check-paid").val("No");
+
         }
     });
 }

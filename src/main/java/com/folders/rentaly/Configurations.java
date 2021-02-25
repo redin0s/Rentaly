@@ -42,13 +42,13 @@ public class Configurations {
 
 
                 http.authorizeRequests()
-                        .antMatchers("/", "/index", "/register", "/login", "/forgot", "/prova/*", "/validate/*" , "/search", "/search/*", "/css/**", "/js/**", "/pictures/**", "/images/*",
+                        .antMatchers("/", "/index", "/register", "/login", "/forgot", "/prova/*", "/validate/*" , "/search", "/search/*", "/css/**", "/js/**", "/pictures/**", "/images/*", "/insertion-modal",
                                 "https://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css",
                                 "https://www.bing.com/fd/ls/*") // Here are the public paths
                             .permitAll()
                         .antMatchers("/account", "/account/*", "/realty/*", "/search/save")
                             .authenticated()
-                        .antMatchers("/realty/*", "/search/save")
+                        .antMatchers("/realty/*", "/search/save", "/delete")
                             .hasAuthority("ACTIVE_USER")
                         .antMatchers("/account/sendNewConfirmationEmail")
                             .hasAuthority("INACTIVE_USER");

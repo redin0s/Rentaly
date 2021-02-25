@@ -21,6 +21,9 @@ public class RentalyEmailService {
 
     private JavaMailSender emailSender;
 
+    @Value("${spring.mail.username}")
+    private String ourmail;
+
     @Value("${website.url}")
     private String url;
 
@@ -98,5 +101,9 @@ public class RentalyEmailService {
                         url,
                         tokenFactory.makeForgotPasswordToken(user))
                     );
+    }
+
+    public void sendReportEmail(User user, String title, String content) {
+        sendEmail(ourmail,String.format("problem from %s",title, user.getEmail()), String.format("%s\n%s",title,content));
     }
 }

@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Types;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -286,5 +287,32 @@ public class RealtyDAOJDBC extends JDBC implements RealtyDAO {
 			log.trace(e.getStackTrace().toString());
 		}
 		return count;
+	}
+
+	@Override
+	public Boolean ownerHasInsertion(User owner, Integer insertionid) {
+        String query = "SELECT * FROM realty WHERE owner_id = ? AND insertion_id = ?";
+		try (Connection con = dbSource.getConnection(); PreparedStatement st = con.prepareStatement(query);) {
+			st.setInt(1, owner.getId());
+			st.setInt(2, insertionid);
+			ResultSet rs = st.executeQuery();
+			if (rs.next()) {
+				return true;
+			}
+		} catch (SQLException e) {
+			log.info(e.getMessage());
+			log.trace(e.getStackTrace().toString());
+		}
+		return false;
+	}
+
+	@Override
+	public void updateCurrentHolders() {
+		String query = " UPDATE realty SET current_holders = co.tot FROM (SELECT realty.id, (SELECT COUNT(*) FROM rent WHERE rent.realty_id=realty.id AND rent.active = true AND rent.end_date >= NOW() ) AS tot FROM realty) AS co WHERE realty.id = co.id";
+		try (Connection con = dbSource.getConnection(); Statement st = con.createStatement();){
+			st.executeUpdate(query);
+		} catch (SQLException e) {
+			log.info("error");
+		}
 	}
 }

@@ -1,11 +1,12 @@
 $(document).ready(function () {
 
-    $('#paybutton').on('click', function () {
-        ajaxPayCheck();
+    $('#paybutton').on('click', function (e) {
+        ajaxPayCheck($('#owner-check').val() == 1);
+        //aggiungi 
     });
 });
 
-function ajaxPayCheck() {
+function ajaxPayCheck(isOwner) {
     var csrfHeader = $("meta[name='_csrf_header']").attr("content");
     var csrfToken = $("meta[name='_csrf']").attr("content");
     var headers = {};
@@ -21,7 +22,12 @@ function ajaxPayCheck() {
             console.log(data);
             if (data == "success") {
                 console.log("Successfully paid check.");
-                location.reload();
+                if(isOwner) {
+                    ajaxGetRealtiesChecks(true);
+                }
+                else {
+                    ajaxGetRentsChecks(true);
+                }
             }
             else {
                 console.log("Error");

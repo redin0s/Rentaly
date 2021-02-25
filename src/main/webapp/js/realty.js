@@ -17,6 +17,21 @@ window.onload = function() {
 $(document).ready(
     function() {
 
+        $("#account").on("click", function(event) {
+            event.preventDefault();
+            window.location.href = "/account";
+        });
+
+        $("#undo").on("click", function(event) {
+            event.preventDefault();
+            $('#undoModal').modal('show');
+        });
+
+        $('#deleteImage').on("click", function(event) {
+            event.preventDefault();
+            deleteImage();
+        });
+
         // POST REQUESTS
 
         $("#savedraft").on("click", function(event) {
@@ -97,7 +112,10 @@ $(document).ready(
                 headers : headers,
 				success : function (data, status, xhr) {
                     console.log("Draft successfully saved.");
-                    window.location.href = "/account";
+ //TODO TOGGLE MODAL WITH PARAM DRAFT                   window.location.href = "/account";
+                    $("#infoContent").html("Bozza salvata con successo.");
+                    $('#saveModal').modal('show');
+
                     
 				}
 			});
@@ -125,10 +143,44 @@ $(document).ready(
                 headers : headers,
 				success : function (data, status, xhr) {
                     console.log("Realty successfully saved.");
-                    window.location.href = "/account";
+  //TODO TOGGLE MODAL WITH PARAM SAVED                     window.location.href = "/account";
+                    $("#infoContent").html("Immobile salvato con successo.");
+                    $('#saveModal').modal('show');
+
 				}
 			});
 
         }
+
+        function deleteImage() {
+            let activecar = $('.carousel-item.active');
+            let image = activecar.find('img').attr('src');
+            //ajax delete image at /delete?
+            var csrfHeader = $("meta[name='_csrf_header']").attr("content");
+            var csrfToken = $("meta[name='_csrf']").attr("content");
+            var headers = {};
+
+            headers[csrfHeader] = csrfToken;
+
+            $.ajax({
+				type : "POST",
+				contentType : "application/json",
+				url : "/delete",
+                data : JSON.stringify({
+                    image: image
+                }),
+                headers : headers,
+				success : function (data, status, xhr) {
+                    activecar.remove();
+                    var next = $('.carousel-item');
+                    if(next.length) {
+                        next.first().addClass('active');
+                    } else {
+                        $('#carouselImages').remove();
+                        $('#deleteImage').remove();
+                    }
+				}
+			});
+        }
         
-    })
+    });

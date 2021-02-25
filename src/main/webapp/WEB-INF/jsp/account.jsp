@@ -4,7 +4,7 @@
 <div class="box" style="position: relative;">
     <div class="h">
         <h4>Email: ${pageContext.request.userPrincipal.name}</h4>
-        <h5><a href="#" id="changeEmail">Cambia indirizzo email</a></h5>
+        <h5><a href="javascript:;" id="changeEmail">Cambia indirizzo email</a></h5>
     </div>
     <hr>
     <div class="h">
@@ -22,6 +22,6 @@
     </div>
     <hr>
     <div class="h">
-        <h4><a href="#" id="changePassword">Cambia password</a></h4>
+        <h4><a href="javascript:;" id="changePassword">Cambia password</a></h4>
     </div>
 </div>

@@ -10,22 +10,24 @@
 	</head>
 	<body>
 		<%@include file="includes/header.jsp" %>
-		<div class="generic-alert">
+		<div class="page-wrap d-flex flex-row align-items-center">
 			<div class="container">
-				<div class="row">
-					<c:if test="${empty type}">
-						<c:set var="type" value="alert-danger"/>
-						<c:set var="title" value="Errore!"/>
-						<c:set var="message" value="Qualcosa è andato storto, ti preghiamo di tornare alla pagina iniziale"/>
-					</c:if>
-					<div class="alert ${type} mx-auto" role="alert">
-						<h4 class="alert-heading">
-							${title} <i class="fa fa-frown-o" aria-hidden="true"></i>
-						</h4>
-						<p>${message}</p>
+				<div class="row justify-content-center">
+					<div class="col-md-6 text-center">
+						<c:if test="${empty type}">
+							<c:set var="type" value="alert-danger"/>
+							<c:set var="title" value="Errore!"/>
+							<c:set var="message" value="Qualcosa è andato storto, ti preghiamo di tornare alla pagina iniziale"/>
+						</c:if>
+						<div class="alert ${type} mx-auto" role="alert">
+							<h4 class="alert-heading">
+								${title} <i class="fa fa-frown-o" aria-hidden="true"></i>
+							</h4>
+							<p>${message}</p>
+						</div>
+						<hr>
+						<a href="/" class="mb-0">Torna alla home</a>
 					</div>
-					<hr>
-					<a href="/" class="mb-0">Torna alla home</a>
 				</div>
 			</div>
 		</div>

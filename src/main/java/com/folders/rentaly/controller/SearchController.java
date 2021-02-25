@@ -60,21 +60,23 @@ public class SearchController {
     @GetMapping("")
     public ModelAndView doGetSearch(ModelAndView model, @RequestParam(required = false) Map<String,String> values){
         model.setViewName("search");
-
         model.addObject("global_maxdistance", MAXDISTANCE);
         model.addObject("global_maxprice", MAXPRICE);
-
-        model.addObject("minprice", Integer.valueOf(0));
-        model.addObject("maxprice", MAXPRICE);
-        model.addObject("distance", Integer.valueOf(10));
-        String query = values.get("search-query");
-        if (query == null)
-            query = "";
-        model.addObject("searchquery", query);
-
         if (!values.isEmpty() && values.containsKey("latitude") && values.containsKey("longitude")) {
-            model.addObject("content", doGetSearchList(new ModelAndView(), values));
+            auxSearch(model, values);
+            model.addObject("both", "si");
         }
+        else {
+
+            model.addObject("minprice", Integer.valueOf(0));
+            model.addObject("maxprice", MAXPRICE);
+            model.addObject("distance", Integer.valueOf(10));
+            String query = values.get("search-query");
+            if (query == null)
+                query = "";
+            model.addObject("searchquery", query);
+        }
+        
 
         return model;
     }
@@ -83,6 +85,12 @@ public class SearchController {
     public ModelAndView doGetSearchList(ModelAndView model, @RequestParam Map<String,String> values) {
         log.info(values.toString());
         model.setViewName("searchResult");
+        auxSearch(model, values);
+        return model;
+    }
+
+    public void auxSearch(ModelAndView model, Map<String,String> values) {
+        log.info(values.toString());
 
         Double latitude = null; 
         Double longitude = null;
@@ -143,8 +151,6 @@ public class SearchController {
             model.addObject("searchquery", query);
 
         }
-
-        return model;
     }
 
     @PostMapping(value = "/save", consumes = { "application/json" })

@@ -1,6 +1,9 @@
 $(document).ready(
     function() {
 
+        //hide the alert
+        $('#error').hide();
+
         // POST REQUEST
         $("#register-form").on("submit", function(event) {
             event.preventDefault();
@@ -36,23 +39,7 @@ $(document).ready(
                 },
                 error : function (data, status, xhr) {
                     console.log("Login error.");
-                    console.log(data);
-                    var msg;
-                    switch (data) {
-                        case "invalidemail":
-                            msg = "Inserisci una email valida.";
-                            break;
-                        case "missingpassword":
-                            msg = "Inserisci una password.";
-                            break;
-                        case "existing":
-                            msg = "Account già esistente.";
-                            break;
-                        default:
-                            msg = "Errore interno, riprova tra poco.";
-                            break;
-                    }
-                    $("#errorMessage").html(msg);
+                    $('#error').show();
 
                 }
 			});

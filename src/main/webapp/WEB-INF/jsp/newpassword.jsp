@@ -7,8 +7,8 @@
 <head>
 	<%@include file="includes/import.jsp" %>
 	<title>Nuova Password - Rentaly</title>
-    <link rel="stylesheet" href="../../css/Login-Register.css">
-    <script src="../../js/newpassword.js"></script>
+    <link rel="stylesheet" href="/css/Login-Register.css">
+    <script src="/js/newpassword.js"></script>
 </head>
 
 <body>

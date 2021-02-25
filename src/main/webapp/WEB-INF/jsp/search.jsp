@@ -5,13 +5,13 @@
 <head>
     <%@include file="includes/import.jsp" %>
     <title>Rentaly</title>
-    <link rel="stylesheet"  href="../../css/Rentaly.css"/>
+    <link rel="stylesheet"  href="/css/Rentaly.css"/>
 </head>
 
 <body>
     <%@include file="includes/header.jsp" %>
 
-    <script src="../../js/search.js"></script>
+    <script src="/js/search.js"></script>
     
     <div class="container search">
         <div class="row">
@@ -24,14 +24,14 @@
                         <span id="search-concept">${type}</span>
                     </a>
                     <ul class="dropdown-menu" role="menu">
-                        <li><a href="#" id="apt">Appartamento</a></li>
-                        <li><a href="#" id="mon">Monolocale</a></li>
-                        <li><a href="#" id="bil">Bilocale</a></li>
-                        <li><a href="#" id="vil">Villa indipendente</a></li>
-                        <li><a href="#" id="sch">Villetta a schiera</a></li>
-                        <li><a href="#" id="gar">Garage</a></li>
-                        <li><a href="#" id="com">Spazio commerciale</a></li>
-                        <li><a href="#" id="all">Qualsiasi</a></li>
+                        <li><a href="javascript:;" id="apt">Appartamento</a></li>
+                        <li><a href="javascript:;" id="mon">Monolocale</a></li>
+                        <li><a href="javascript:;" id="bil">Bilocale</a></li>
+                        <li><a href="javascript:;" id="vil">Villa indipendente</a></li>
+                        <li><a href="javascript:;" id="sch">Villetta a schiera</a></li>
+                        <li><a href="javascript:;" id="gar">Garage</a></li>
+                        <li><a href="javascript:;" id="com">Spazio commerciale</a></li>
+                        <li><a href="javascript:;" id="all">Qualsiasi</a></li>
                     </ul>
                 </div>
         
@@ -69,7 +69,9 @@
     </div>
             
     <div class="content" id="content">
-        ${content}
+        <c:if test="${not empty both}">
+            <%@include file="searchResult.jsp" %>
+        </c:if>
     </div>
       
 

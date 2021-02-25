@@ -7,8 +7,8 @@
 <head>
 	<%@include file="includes/import.jsp" %>
 	<title>Password Dimenticata - Rentaly</title>
-    <link rel="stylesheet" href="../../css/Login-Register.css">
-    <script src="../../js/forgotpassword.js"></script>
+    <link rel="stylesheet" href="/css/Login-Register.css">
+    <script src="/js/forgotpassword.js"></script>
 </head>
 
 <body>

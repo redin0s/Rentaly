@@ -20,4 +20,8 @@ public interface RealtyDAO extends DAO<Realty>{
 	List<Realty> findClosestToPointAndType(Double lat, Double lon, Integer distance, String type);
 
     Integer countByOwnerAndDraft(User owner, Boolean draft);
+
+    Boolean ownerHasInsertion(User owner, Integer insertionid);
+
+    void updateCurrentHolders();
 }

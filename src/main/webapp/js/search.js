@@ -1,3 +1,4 @@
+
 $(document).ready(function () {
     $('.search-panel .dropdown-menu').find('a').click(function(e) {
         e.preventDefault();
@@ -6,6 +7,12 @@ $(document).ready(function () {
         $('.search-panel span#search-concept').text(concept);
     });
 
+    $("#content").on('click', '#imgButton', function () {
+        // console.log(e.target);
+        let ultimate_target = $(this).parent().parent().find("#insertionidtouse").val();
+        ajaxGetImages(ultimate_target);
+    });
+    
     $("#search-button").on('click', function () {
         searchPrologue($('#search-query').val());
     });
@@ -48,6 +55,21 @@ $(document).ready(function () {
         $( "#distance" ).html($( "#distance-slider" ).slider( "values", 0 ) + "km");
       
 });
+
+function ajaxGetImages(id) {
+    // var insertionID = $('insertionidtouse').val();
+    $.ajax({
+        type: "GET",
+        url: "/insertion-modal",
+        data: {
+            id: id
+        },
+        success: function (data, status, xhr) {
+            $('#imagesModal').find('.carousel-inner').html(data);
+            $('#imagesModal').modal('show');
+        }
+    })
+}
 
 function searchPrologue(locationQuery) {
     $.ajax({
@@ -119,7 +141,16 @@ function ajaxSaveSearch() {
         data: JSON.stringify(s),
         headers: headers,
         success: function (data, status, xhr) {
-            //TODO MODAL SAVED SEARCH
+            $("savedSearchModalLabel").html("Ricerca salvata");
+            $("#infoContent").html("Ricerca salvata con successo.");
+            $('#savedSearchModal').modal('show');
+            console.log(data);
+        },
+        error: function(data,status,xhr) {
+            $("savedSearchModalLabel").html("Ricerca non salvata");
+            $("#infoContent").html("Ricerca non salvata, riprova più tardi");
+            $('#savedSearchModal').modal('show');
+            console.log(data);
         }
     });
 }

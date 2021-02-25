@@ -42,13 +42,13 @@ public class RentDAOJDBC extends JDBC implements RentDAO {
 		rent.setCost(rs.getInt("cost"));
 		rent.setStart(rs.getObject("start_date", LocalDate.class));
 		rent.setEnd(rs.getObject("end_date", LocalDate.class));
+		rent.setActive(rs.getBoolean("active"));
 		Integer id = rs.getInt("holder_id");
-		if (rs.wasNull()) {
-			id = null;
-		}
-		Optional<User> user = userDAO.get(id);
-		if (user.isPresent()) {
-			rent.setHolder(user.get());
+		if (!rs.wasNull()) {
+			Optional<User> user = userDAO.get(id);
+			if (user.isPresent()) {
+				rent.setHolder(user.get());
+			}
 		}
 		rent.setRealty(realtyDAO.get(rs.getInt("realty_id")).get());
 		return rent;
@@ -103,8 +103,6 @@ public class RentDAOJDBC extends JDBC implements RentDAO {
 
 			while (rs.next()) {
 				Rent rent = createSafeRent(rs);
-				// rent.setRealty(RealtyDAOJDBC.findById(rs.getInt("realty_id")));
-				// rent.setHolder(UserDAOJDBC.findById(rs.getInt("holder_id")));
 
 				ls.add(rent);
 			}
@@ -123,11 +121,6 @@ public class RentDAOJDBC extends JDBC implements RentDAO {
 			ResultSet rs = st.executeQuery();
 			while (rs.next()) {
 				Rent rent = createSafeRent(rs);
-				Realty r = new Realty();
-				r.setId(rs.getInt("realty_id"));
-				rent.setRealty(r);
-				rent.setHolder(holder);
-
 				ls.add(rent);
 			}
 		} catch (SQLException e) {
@@ -148,7 +141,6 @@ public class RentDAOJDBC extends JDBC implements RentDAO {
 			while (rs.next()) {
 				Rent rent = createSafeRent(rs);
 				rent.setHolder(holder);
-
 				ls.add(rent);
 			}
 		} catch (SQLException e) {

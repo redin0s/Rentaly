@@ -7,4 +7,5 @@ import com.folders.rentaly.model.User;
 
 public interface SavedSearchDAO extends DAO<SavedSearch> {
 	List<SavedSearch> findSavedSearchByUser(User t);
+	void deleteByUser(Integer id, User user);
 }

@@ -11,27 +11,20 @@ $(document).ready(function () {
 
     $('#problemSubmit').click(function (e) {
         e.preventDefault();
-        $('#problemsModal').text($('#segnalation-form').serialize());
+        ajaxSendProblem();
         $('#problemsModal').modal('hide');
-        /*
-        $.post('http://path/to/post', 
-           $('#myForm').serialize(), 
-           function(data, status, xhr){
-             // do something here with response;
-           });
-        */
     });
-    
+
     $('.inactive').on('click', function () {
         $('.active').attr("class", "inactive");
         $(this).attr("class", "active");
     });
 
-    $('#body').on('click', '#confirm-email', function () { 
+    $('#body').on('click', '#confirm-email', function () {
         ajaxSendNewConfirmationEmail();
     });
 
-    $('#sidebar').on('click' , '#account', function () {
+    $('#sidebar').on('click', '#account', function () {
         ajaxGetAccountData();
     });
 
@@ -44,7 +37,7 @@ $(document).ready(function () {
     });
 
     $('#sidebar, #content').on('click', '#realties', function () {
-       ajaxGetRealties(false);
+        ajaxGetRealties(false);
     });
 
     $('#sidebar').on('click', '#drafts', function () {
@@ -87,8 +80,45 @@ $(document).ready(function () {
         ajaxGetSavedSearches();
     });
 
+    $('#content').on('click', '#unsave-search', function () {
+        ajaxUnsaveSearch(window.selected);
+        console.log("done1");
+        ajaxGetSavedSearches();
+        console.log("done2");
+    });
+
     ajaxGetAccountData();
 });
+
+
+function ajaxSendProblem() {
+    var csrfHeader = $("meta[name='_csrf_header']").attr("content");
+    var csrfToken = $("meta[name='_csrf']").attr("content");
+    var headers = {};
+
+    headers[csrfHeader] = csrfToken;
+
+    var d = {
+        title: $("#problemTitle").val(),
+        content: $("#descriptionText").val(),
+    };
+    console.log(d);
+
+    $.ajax({
+        type: "POST",
+        contentType: "application/json",
+        url: "/account/report",
+        data: JSON.stringify(d),
+        headers: headers,
+        success: function (data, status, xhr) {
+            console.log("Successfully sent problem.");
+
+            $("#problemsModal").modal('hide');
+            $("#problemTitle").val("");
+            $("#descriptionText").val("");
+        }
+    });
+}
 
 function ajaxSendNewConfirmationEmail() {
     var csrfHeader = $("meta[name='_csrf_header']").attr("content");
@@ -107,8 +137,8 @@ function ajaxGetSavedSearches() {
     $.ajax({
         type: "GET",
         url: "/account/savedsearches",
-        headers: {"AJAX": true},
-        success : function(data) {
+        headers: { "AJAX": true },
+        success: function (data) {
             $('#content').html(data);
         }
     });
@@ -118,8 +148,8 @@ function ajaxGetAccountData() {
     $.ajax({
         type: "GET",
         url: "/account/data",
-        headers: {"AJAX": true},
-        success : function(data) {
+        headers: { "AJAX": true },
+        success: function (data) {
             $('#content').html(data);
         }
     });
@@ -129,8 +159,8 @@ function ajaxGetChangeEmail() {
     $.ajax({
         type: "GET",
         url: "/account/changeEmail",
-        headers: {"AJAX": true},
-        success : function(data) {
+        headers: { "AJAX": true },
+        success: function (data) {
             $('#content').html(data);
         }
     });
@@ -140,8 +170,8 @@ function ajaxGetChangePassword() {
     $.ajax({
         type: "GET",
         url: "/account/changePassword",
-        headers: {"AJAX": true},
-        success : function(data) {
+        headers: { "AJAX": true },
+        success: function (data) {
             $('#content').html(data);
         }
     });
@@ -152,8 +182,8 @@ function ajaxGetRealties(draft) {
         type: "GET",
         contentType: "application/json",
         url: "/account/realties",
-        data: ({"isDraft" : draft}),
-        headers: {"AJAX": true},
+        data: ({ "isDraft": draft }),
+        headers: { "AJAX": true },
         success: function (data) {
             $('#content').html(data);
         }
@@ -165,8 +195,8 @@ function ajaxGetRealtiesRents(ended) {
         type: "GET",
         contentType: "application/json",
         url: "/account/realties-rents",
-        data: ({"isEnded" : ended}),
-        headers: {"AJAX": true},
+        data: ({ "isEnded": ended }),
+        headers: { "AJAX": true },
         success: function (data) {
             $('#content').html(data);
         }
@@ -178,8 +208,8 @@ function ajaxGetRealtiesChecks(paid) {
         type: "GET",
         contentType: "application/json",
         url: "/account/realties-checks",
-        data: ({"isPaid" : paid}),
-        headers: {"AJAX": true},
+        data: ({ "isPaid": paid }),
+        headers: { "AJAX": true },
         success: function (data) {
             $('#content').html(data);
         }
@@ -191,8 +221,8 @@ function ajaxGetRents(ended) {
         type: "GET",
         contentType: "application/json",
         url: "/account/rents",
-        data: ({"isEnded" : ended}),
-        headers: {"AJAX": true},
+        data: ({ "isEnded": ended }),
+        headers: { "AJAX": true },
         success: function (data) {
             $('#content').html(data);
         }
@@ -204,10 +234,28 @@ function ajaxGetRentsChecks(paid) {
         type: "GET",
         contentType: "application/json",
         url: "/account/rents-checks",
-        data: ({"isPaid" : paid}),
-        headers: {"AJAX": true},
+        data: ({ "isPaid": paid }),
+        headers: { "AJAX": true },
         success: function (data) {
             $('#content').html(data);
         }
     });
+}
+
+function ajaxUnsaveSearch(id) {
+    var csrfHeader = $("meta[name='_csrf_header']").attr("content");
+    var csrfToken = $("meta[name='_csrf']").attr("content");
+    var headers = {};
+
+    headers[csrfHeader] = csrfToken;
+    $.ajax({
+        type: "POST",
+        url: "/account/unsaveSearch",
+        headers: headers,
+        data: { "id": id }
+    });
+}
+
+function setSelected(id) {
+    window.selected = id;
 }

@@ -12,7 +12,7 @@
 
 <body>
     <%@include file="includes/header.jsp" %>
-    <script src="../../js/realty.js"></script> <!--change later-->
+    <script src="/js/realty.js"></script> <!--change later-->
     <br>
     <div class="container">
         <form id="realty" enctype="multipart/form-data">
@@ -25,7 +25,7 @@
                 <div class="col-md-6">
                     <div id="map" class="map" style="width:100%;height:400px;" tabindex="0"></div>
                     <script type='text/javascript' src='https://www.bing.com/api/maps/mapcontrol?callback=GetMap&key=AghYmNhfhWJ5VGkmfMOX2eg63AmJNXX6dR4DpC7-q6YjCgNGqrzOzJyPUK3OQbqB&setMkt=it-IT&setLang=it' async defer></script>
-                    <script src="../../js/map.js" crossorigin async defer></script>
+                    <script src="/js/map.js" crossorigin async defer></script>
                     <br>
                 </div>
                 <div class="col-md-6">
@@ -87,14 +87,9 @@
                 </div>
 
                 
-                <div class="col-lg-6">
-                        <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
-                        <ol class="carousel-indicators">
-
-                        <c:forEach items="${images}" var="img" varStatus="loop">
-                            <li data-target="#carouselExampleIndicators" data-slide-to="${loop.index}" class="<c:if test='${loop.index == 0}'>active</c:if>"></li>
-                        </c:forEach>
-                        </ol>
+                <div class="col-lg-6 text-center">
+                        <button class="btn btn-danger m-2" id="deleteImage">Elimina</button>
+                        <div id="carouselImages" class="carousel slide minicarousel m-2" data-ride="carousel">
                         <div class="carousel-inner">
                             <c:forEach items="${images}" var="img" varStatus="loop">
                             <div class="carousel-item <c:if test='${loop.index == 0}'>active</c:if>">
@@ -102,16 +97,16 @@
                             </div>
                             </c:forEach>
                         </div>
-                        <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+                        <a class="carousel-control-prev" href="#carouselImages" role="button" data-slide="prev">
                             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                             <span class="sr-only">Previous</span>
                         </a>
-                        <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+                        <a class="carousel-control-next" href="#carouselImages" role="button" data-slide="next">
                             <span class="carousel-control-next-icon" aria-hidden="true"></span>
                             <span class="sr-only">Next</span>
                         </a>
                         </div>
-                    <input type='file' id='files' name='files' multiple>
+                    <input type='file' id='files' name='files' class='m-2' multiple>
                 </div>
                 <div class="col-lg-4">
                     <label for="desc">Descrizione:</label>
@@ -129,18 +124,57 @@
             <div class="row button-row">
                 <c:choose>
                     <c:when test="${realty.draft == true}">
-                        <button class="btn btn-danger btn-block col" type="submit" id="undo" href="/account">Annulla</button>
-                        <button class="btn btn-secondary btn-block col" type="button" id="savedraft">Salva bozza</button>
-                        <button class="btn btn-success btn-block col" type="button" id="save">Salva</button>
+                        <button class="btn btn-danger btn-block col m-2" id="undo">Annulla</button>
+                        <button class="btn btn-secondary btn-block col m-2" type="button" id="savedraft">Salva bozza</button>
+                        <button class="btn btn-success btn-block col m-2" type="button" id="save">Salva</button>
                     </c:when>
                     <c:otherwise>
-                        <button class="btn btn-danger btn-block col" type="submit" id="undo" href="#">Annulla</button>
+                        <button class="btn btn-danger btn-block col m-2" id="undo">Annulla</button>
                         <div class="col"></div>
-                        <button class="btn btn-success col" type="button" id="save">Salva</button>
+                        <button class="btn btn-success col m-2" type="button" id="save">Salva</button>
                     </c:otherwise>
                 </c:choose>
             </div>
         </form>
+    </div>
+
+    <div class="modal fade" id="undoModal" tabindex="-1" role="dialog" aria-labelledby="undoModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="undoModalLabel">Confermi</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Chiudi">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <a>Confermi di voler annullare?</a>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Chiudi</button>
+            <button type="button" class="btn btn-success" id="account">Conferma</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="saveModal" tabindex="-1" role="dialog" aria-labelledby="saveModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="saveDraftModalLabel">Salvataggio completato</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Chiudi">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p id="infoContent"> </p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-success" data-dismiss="modal" id="account">Chiudi</button>
+          </div>
+        </div>
+      </div>
     </div>
 
     <%@include file="includes/footer.jsp" %>
