@@ -42,7 +42,7 @@ public class Configurations {
 
 
                 http.authorizeRequests()
-                        .antMatchers("/", "/index", "/register", "/login", "/forgot", "/prova/*", "/validate/*" , "/search", "/search/*", "/css/**", "/js/**", "/pictures/**", "/images/*", "/insertion-modal",
+                        .antMatchers("/", "/index", "/register", "/login", "/forgot", "/prova/*", "/validate/*" , "/search", "/search/*", "/css/**", "/js/**", "/pictures/**", "/images/*", "/insertion-modal",  "/forgotPassword",
                                 "https://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css",
                                 "https://www.bing.com/fd/ls/*") // Here are the public paths
                             .permitAll()

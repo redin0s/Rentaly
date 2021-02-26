@@ -1,8 +1,8 @@
 $(document).ready(function () {
 
-    $('#paybutton').on('click', function (e) {
+    $("#content").on("click", '#paybutton', function (event) {
+        event.preventDefault();
         ajaxPayCheck($('#owner-check').val() == 1);
-        //aggiungi 
     });
 });
 
@@ -19,18 +19,12 @@ function ajaxPayCheck(isOwner) {
         data: JSON.stringify({ "selected": window.selected }),
         headers: headers,
         success: function (data, status, xhr) {
-            console.log(data);
-            if (data == "success") {
-                console.log("Successfully paid check.");
-                if(isOwner) {
-                    ajaxGetRealtiesChecks(true);
-                }
-                else {
-                    ajaxGetRentsChecks(true);
-                }
+            console.log("Successfully paid check.");
+            if(isOwner) {
+                ajaxGetRealtiesChecks(true);
             }
             else {
-                console.log("Error");
+                ajaxGetRentsChecks(true);
             }
         }
     });

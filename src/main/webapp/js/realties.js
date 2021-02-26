@@ -56,7 +56,6 @@ $(document).ready(
                 data : JSON.stringify(d),
                 headers : headers,
 				success : function (data, status, xhr) {
-                    console.log(data);
                     console.log("Successfully added holder.");
 
                     $("#infoModalContent").html("Abbiamo inviato una email a " + $("#rent-user_email").val());

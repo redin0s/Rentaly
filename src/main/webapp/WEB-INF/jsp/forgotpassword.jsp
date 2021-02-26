@@ -1,3 +1,4 @@
+
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
@@ -15,8 +16,8 @@
 	<%@include file="includes/header.jsp" %>
 
     <div class="login-register">
-        <form id="change-password-form">
-            <h2 class="sr-only">Reimposta password</h2>
+        <form id="forgot-form">
+            <h2>Reimposta password</h2>
 
             <h6>Ti invieremo una email con un link da seguire per reimpostare la tua password.</h6>
 

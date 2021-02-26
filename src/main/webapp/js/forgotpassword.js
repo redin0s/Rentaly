@@ -10,10 +10,19 @@ $(document).ready(
         });
 
         function ajaxForgotPost() {
+            var csrfHeader = $("meta[name='_csrf_header']").attr("content");
+            var csrfToken = $("meta[name='_csrf']").attr("content");
+            var headers = {};
+
+            headers[csrfHeader] = csrfToken;
+            
             $.ajax({
 				type : "POST",
-				url : "forgotPassword",
-                data : $('#email').val(),
+				url : "/forgotPassword",
+				contentType : "application/json; charset=utf-8",
+                data : JSON.stringify({
+                    email :$('#email').val()}),
+                headers : headers,
 				success : function () {
                     console.log("done");
                     window.location.href = "/";

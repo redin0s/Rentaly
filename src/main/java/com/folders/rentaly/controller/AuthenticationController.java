@@ -87,7 +87,7 @@ public class AuthenticationController {
         return new ResponseEntity<String>(response, status);
 	}
 
-	@PostMapping(value = "/forgotPassword")
+	@PostMapping(value = "/forgotPassword", consumes = {"application/json"})
 	@ResponseBody
 	public ResponseEntity<String> doSendForgotPasswordToken(@RequestBody JSONObject content) {
         String email = content.getAsString("email");
